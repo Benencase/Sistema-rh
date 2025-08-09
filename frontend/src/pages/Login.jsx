@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+// A URL do servidor é definida por uma variável de ambiente do Vite
+// Em desenvolvimento, usa localhost:3001. Em produção, usa a URL do Render.
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
+
 function Login({ onLogin }) {
   const [key, setKey] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +20,8 @@ function Login({ onLogin }) {
     setError(null);
 
     try {
-      const res = await axios.post("http://localhost:3001/auth", { key });
+      // Agora usa a variável BASE_URL
+      const res = await axios.post(`${BASE_URL}/auth`, { key });
       if (res.data.valid) {
         onLogin(res.data.expiresAt);
       } else {
