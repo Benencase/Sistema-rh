@@ -39,3 +39,4 @@ app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Chave atual: ${CHAVE_FIXA}`);
 });
+// Ajuste final para o Render.
