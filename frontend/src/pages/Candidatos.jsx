@@ -1,5 +1,79 @@
 import React, { useState, useEffect } from "react";
 
+function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
+  const fatores = [
+    "Postura",
+    "Comunicação",
+    "Habilidade Profissional",
+    "Comprometimento",
+    "Capacidade de Adaptação",
+    "Iniciativa / Liderança",
+    "Comportamento Ético",
+    "Maturidade Emocional",
+    "Motivação para o Trabalho",
+    "Serenidade Aparente",
+    "Assertividade",
+  ];
+
+  const handleNotaChange = (i, valor) => {
+    const novasNotas = [...(avaliacao?.notas || Array(fatores.length).fill(""))];
+    novasNotas[i] = valor;
+    setAvaliacao({ ...avaliacao, notas: novasNotas });
+  };
+
+  const handleObservacoesChange = (valor) => {
+    setAvaliacao({ ...avaliacao, observacoes: valor });
+  };
+
+  return (
+    <div style={{ marginTop: 20, gridColumn: "1 / 3", background: "#f0f0f0", padding: 15, borderRadius: 8 }}>
+      <h3>Avaliação Comportamental</h3>
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th style={{ borderBottom: "1px solid #ccc", textAlign: "left", padding: "8px" }}>
+              Fatores
+            </th>
+            <th style={{ borderBottom: "1px solid #ccc", padding: "8px", width: 120 }}>
+              Nota (1 a 5)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {fatores.map((fator, i) => (
+            <tr key={i}>
+              <td style={{ borderBottom: "1px solid #eee", padding: "8px" }}>{fator}</td>
+              <td style={{ borderBottom: "1px solid #eee", padding: "8px", textAlign: "center" }}>
+                <select
+                  value={avaliacao?.notas?.[i] || ""}
+                  onChange={(e) => handleNotaChange(i, e.target.value)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="">Selecione</option>
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <option key={num} value={num}>
+                      {num}
+                    </option>
+                  ))}
+                </select>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div style={{ marginTop: 16 }}>
+        <label style={{ display: "block", marginBottom: 6 }}>Observações gerais:</label>
+        <textarea
+          rows={4}
+          value={avaliacao?.observacoes || ""}
+          onChange={(e) => handleObservacoesChange(e.target.value)}
+          style={{ width: "100%" }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function Candidatos() {
   // Inicializa do localStorage ou começa com array vazio
   const [candidatos, setCandidatos] = useState(() => {
@@ -21,7 +95,6 @@ function Candidatos() {
   const [novaFoto, setNovaFoto] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
   const [observacoes, setObservacoes] = useState("");
-  const [novaAvaliacao, setNovaAvaliacao] = useState(""); // avaliação comportamental
 
   // Dados currículo complementares
   const [formacaoAcademica, setFormacaoAcademica] = useState("");
@@ -32,6 +105,9 @@ function Candidatos() {
   const [estadoCivil, setEstadoCivil] = useState("");
   const [genero, setGenero] = useState("M");
   const [experiencia, setExperiencia] = useState("");
+
+  // Avaliação comportamental
+  const [avaliacao, setAvaliacao] = useState(null);
 
   const statusOptions = [
     "Não selecionado",
@@ -70,7 +146,6 @@ function Candidatos() {
     "TO - Palmas",
   ];
 
-  // SALVA no localStorage sempre que candidatos mudar
   useEffect(() => {
     localStorage.setItem("candidatos", JSON.stringify(candidatos));
   }, [candidatos]);
@@ -109,7 +184,7 @@ function Candidatos() {
     setPreviewFoto(null);
     setEditandoId(null);
     setObservacoes("");
-    setNovaAvaliacao(""); // limpar avaliação
+    setAvaliacao(null);
   };
 
   const adicionarOuAtualizarCandidato = () => {
@@ -153,7 +228,7 @@ function Candidatos() {
                 status: novoStatus,
                 foto: previewFoto || c.foto,
                 observacoes: observacoes.trim(),
-                avaliacaoComportamental: novaAvaliacao.trim(), // salva avaliação
+                avaliacao: avaliacao || c.avaliacao || null,
               }
             : c
         )
@@ -182,7 +257,7 @@ function Candidatos() {
           status: novoStatus,
           foto: previewFoto,
           observacoes: observacoes.trim(),
-          avaliacaoComportamental: novaAvaliacao.trim(), // salva avaliação
+          avaliacao: avaliacao,
         },
       ]);
     }
@@ -213,284 +288,271 @@ function Candidatos() {
     setPreviewFoto(c.foto || null);
     setNovaFoto(null);
     setObservacoes(c.observacoes || "");
-    setNovaAvaliacao(c.avaliacaoComportamental || ""); // carrega avaliação
-  };
-
-  const excluirCandidato = (id) => {
-    if (window.confirm("Excluir candidato?")) {
-      setCandidatos((old) => old.filter((c) => c.id !== id));
-      if (editandoId === id) limparFormulario();
-    }
+    setAvaliacao(c.avaliacao || null);
+    setAbaAtiva("form");
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 1100,
-        margin: "2rem auto",
-        padding: "1rem 1.5rem",
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 14,
-        lineHeight: 1.4,
-      }}
-    >
-      <h2 style={{ marginBottom: "1rem" }}>👥 Candidatos</h2>
+    <div style={{ padding: 20, maxWidth: 900, margin: "auto" }}>
+      <h2>Cadastro de Candidatos</h2>
+      <div style={{ marginBottom: 12 }}>
+        <button onClick={() => setAbaAtiva("form")} disabled={abaAtiva === "form"}>
+          Formulário
+        </button>
+        <button
+          onClick={() => setAbaAtiva("curriculo")}
+          disabled={abaAtiva === "curriculo"}
+          style={{ marginLeft: 8 }}
+        >
+          Currículo
+        </button>
+      </div>
 
-      <div
-        style={{
-          background: "#f9f9f9",
-          padding: "1rem 1.5rem",
-          borderRadius: 10,
-          boxShadow: "0 6px 18px -4px rgba(0,0,0,0.1)",
-          marginBottom: "1.5rem",
-        }}
-      >
-        {/* Abas */}
-        <div style={{ marginBottom: 20, display: "flex", gap: 15 }}>
-          <button
-            onClick={() => setAbaAtiva("form")}
-            style={abaAtiva === "form" ? activeTabStyle : inactiveTabStyle}
-          >
-            Formulário
-          </button>
-          <button
-            onClick={() => setAbaAtiva("curriculo")}
-            style={abaAtiva === "curriculo" ? activeTabStyle : inactiveTabStyle}
-          >
-            Currículo
-          </button>
-        </div>
-
-        {/* Conteúdo das abas */}
-        {abaAtiva === "form" && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 15,
-              marginBottom: 10,
-            }}
-          >
-            {/* Dados básicos */}
-            <input
-              type="text"
-              placeholder="Nome*"
-              value={novoNome}
-              onChange={(e) => setNovoNome(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Sobrenome"
-              value={sobrenome}
-              onChange={(e) => setSobrenome(e.target.value)}
-            />
-            <select
-              value={novaCidade}
-              onChange={(e) => setNovaCidade(e.target.value)}
-            >
-              <option value="">Escolha a cidade*</option>
-              {cidadesDoBrasil.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            <input
-              type="date"
-              placeholder="Data de nascimento"
-              value={dataNascimento}
-              onChange={(e) => setDataNascimento(e.target.value)}
-            />
-            <textarea
-              placeholder="Sobre (breve descrição)"
-              value={novoSobre}
-              onChange={(e) => setNovoSobre(e.target.value)}
-              rows={3}
-              style={{ gridColumn: "1 / 3" }}
-            />
-            <input
-              type="text"
-              placeholder="Vaga desejada*"
-              value={novaVaga}
-              onChange={(e) => setNovaVaga(e.target.value)}
-            />
-            <textarea
-              placeholder="Observações"
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              rows={3}
-              style={{ gridColumn: "1 / 3" }}
-            />
-            <textarea
-              placeholder="Avaliação Comportamental"
-              value={novaAvaliacao}
-              onChange={(e) => setNovaAvaliacao(e.target.value)}
-              rows={3}
-              style={{ gridColumn: "1 / 3" }}
-            />
-            <select
-              value={novoStatus}
-              onChange={(e) => setNovoStatus(e.target.value)}
-            >
-              {statusOptions.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-            <div>
-              <input type="file" onChange={handleFotoChange} />
+      {abaAtiva === "form" && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 16,
+            background: "#fafafa",
+            padding: 20,
+            borderRadius: 10,
+          }}
+        >
+          <div>
+            <label>
+              Nome*:<br />
+              <input
+                type="text"
+                value={novoNome}
+                onChange={(e) => setNovoNome(e.target.value)}
+                required
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Sobrenome:<br />
+              <input
+                type="text"
+                value={sobrenome}
+                onChange={(e) => setSobrenome(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Cidade*:<br />
+              <input
+                list="cidadesDoBrasil"
+                value={novaCidade}
+                onChange={(e) => setNovaCidade(e.target.value)}
+                placeholder="UF - Cidade"
+                required
+              />
+              <datalist id="cidadesDoBrasil">
+                {cidadesDoBrasil.map((c, i) => (
+                  <option key={i} value={c} />
+                ))}
+              </datalist>
+            </label>
+          </div>
+          <div>
+            <label>
+              Data Nascimento:<br />
+              <input
+                type="date"
+                value={dataNascimento}
+                onChange={(e) => setDataNascimento(e.target.value)}
+              />
+            </label>
+          </div>
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label>
+              Sobre:<br />
+              <textarea
+                rows={3}
+                value={novoSobre}
+                onChange={(e) => setNovoSobre(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Vaga*:<br />
+              <input
+                type="text"
+                value={novaVaga}
+                onChange={(e) => setNovaVaga(e.target.value)}
+                required
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Status:<br />
+              <select
+                value={novoStatus}
+                onChange={(e) => setNovoStatus(e.target.value)}
+              >
+                {statusOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label>
+              Foto:<br />
+              <input type="file" accept="image/*" onChange={handleFotoChange} />
               {previewFoto && (
                 <img
                   src={previewFoto}
-                  alt="Preview"
-                  style={{ maxWidth: 120, marginTop: 5, borderRadius: 6 }}
+                  alt="preview"
+                  style={{ marginTop: 10, maxWidth: 150, borderRadius: 8 }}
                 />
               )}
-            </div>
-            <button
-              style={{ gridColumn: "1 / 3" }}
-              onClick={adicionarOuAtualizarCandidato}
-            >
-              {editandoId ? "Atualizar" : "Adicionar"} candidato
+            </label>
+          </div>
+
+          {/* Avaliação Comportamental */}
+          <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
+
+          {/* Currículo complementares */}
+          <div>
+            <label>
+              Formação Acadêmica:<br />
+              <input
+                type="text"
+                value={formacaoAcademica}
+                onChange={(e) => setFormacaoAcademica(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Email:<br />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Telefone:<br />
+              <input
+                type="tel"
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Endereço:<br />
+              <input
+                type="text"
+                value={endereco}
+                onChange={(e) => setEndereco(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              CEP:<br />
+              <input
+                type="text"
+                value={cep}
+                onChange={(e) => setCep(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Estado Civil:<br />
+              <input
+                type="text"
+                value={estadoCivil}
+                onChange={(e) => setEstadoCivil(e.target.value)}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Gênero:<br />
+              <select value={genero} onChange={(e) => setGenero(e.target.value)}>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </label>
+          </div>
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label>
+              Experiência:<br />
+              <textarea
+                rows={3}
+                value={experiencia}
+                onChange={(e) => setExperiencia(e.target.value)}
+              />
+            </label>
+          </div>
+
+          <div style={{ gridColumn: "1 / 3", marginTop: 20 }}>
+            <button onClick={adicionarOuAtualizarCandidato}>
+              {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
             </button>
             {editandoId && (
               <button
-                style={{ gridColumn: "1 / 3", backgroundColor: "#999" }}
                 onClick={limparFormulario}
+                style={{ marginLeft: 10 }}
+                type="button"
               >
-                Cancelar edição
+                Cancelar
               </button>
             )}
           </div>
-        )}
-
-        {abaAtiva === "curriculo" && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 15,
-              marginBottom: 10,
-            }}
-          >
-            <input
-              type="text"
-              placeholder="Formação Acadêmica"
-              value={formacaoAcademica}
-              onChange={(e) => setFormacaoAcademica(e.target.value)}
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="tel"
-              placeholder="Telefone"
-              value={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Endereço"
-              value={endereco}
-              onChange={(e) => setEndereco(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="CEP"
-              value={cep}
-              onChange={(e) => setCep(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Estado civil"
-              value={estadoCivil}
-              onChange={(e) => setEstadoCivil(e.target.value)}
-            />
-            <select
-              value={genero}
-              onChange={(e) => setGenero(e.target.value)}
-              style={{ gridColumn: "1 / 2" }}
-            >
-              <option value="M">Masculino</option>
-              <option value="F">Feminino</option>
-              <option value="O">Outro</option>
-            </select>
-            <textarea
-              placeholder="Experiência profissional"
-              value={experiencia}
-              onChange={(e) => setExperiencia(e.target.value)}
-              rows={3}
-              style={{ gridColumn: "1 / 3" }}
-            />
-          </div>
-        )}
-      </div>
-
-      <h3>Candidatos cadastrados</h3>
-      {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
-      {candidatos.map((c) => (
-        <div
-          key={c.id}
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: 8,
-            padding: 15,
-            marginBottom: 15,
-            display: "flex",
-            gap: 15,
-            alignItems: "center",
-          }}
-        >
-          <img
-            src={c.foto || "https://via.placeholder.com/80x80?text=Foto"}
-            alt={c.nome}
-            style={{ width: 80, height: 80, borderRadius: 8, objectFit: "cover" }}
-          />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: "bold", fontSize: 18 }}>
-              {c.nome} {c.sobrenome}
-            </div>
-            <div>
-              {c.estado} - {c.cidade}
-            </div>
-            <div>Vaga: {c.vaga}</div>
-            <div>Status: {c.status}</div>
-            <div>Avaliação: {c.avaliacaoComportamental || "Não avaliado"}</div>
-            {c.observacoes && (
-              <div style={{ fontStyle: "italic", color: "#555" }}>
-                Observações: {c.observacoes}
-              </div>
-            )}
-          </div>
-          <div>
-            <button onClick={() => editarCandidato(c)}>✏️ Editar</button>{" "}
-            <button onClick={() => excluirCandidato(c.id)}>❌ Excluir</button>
-          </div>
         </div>
-      ))}
+      )}
+
+      {abaAtiva === "curriculo" && (
+        <div>
+          <h3>Lista de Candidatos</h3>
+          {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
+          <ul>
+            {candidatos.map((c) => (
+              <li key={c.id} style={{ marginBottom: 12 }}>
+                <strong>{c.nome} {c.sobrenome}</strong> - {c.vaga} - Status: {c.status}
+                <br />
+                Cidade: {c.estado} - {c.cidade}
+                <br />
+                {/* Exibir avaliação resumida */}
+                {c.avaliacao && (
+                  <>
+                    <strong>Avaliação:</strong>
+                    <ul>
+                      {c.avaliacao.notas?.map((nota, i) => (
+                        <li key={i}>
+                          {nota ? `Fator ${i + 1}: ${nota}` : `Fator ${i + 1}: Sem nota`}
+                        </li>
+                      ))}
+                    </ul>
+                    <em>Observações: {c.avaliacao.observacoes || "Nenhuma"}</em>
+                  </>
+                )}
+                <br />
+                <button onClick={() => editarCandidato(c)}>Editar</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
-
-const activeTabStyle = {
-  borderBottom: "2px solid #000",
-  fontWeight: "bold",
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  paddingBottom: 5,
-};
-
-const inactiveTabStyle = {
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  paddingBottom: 5,
-  color: "#555",
-};
 
 export default Candidatos;
