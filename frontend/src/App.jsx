@@ -1,23 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Candidatos from "./pages/Candidatos";
 import Vagas from "./pages/Vagas";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Carrega estado do localStorage, ou usa valor padrão
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return JSON.parse(localStorage.getItem("isLoggedIn")) || false;
+  });
+
   const [currentPage, setCurrentPage] = useState("dashboard");
 
-  // Estado dos candidatos
-  const [candidatos, setCandidatos] = useState([]);
+  const [candidatos, setCandidatos] = useState(() => {
+    return JSON.parse(localStorage.getItem("candidatos")) || [];
+  });
 
-  // Estado das vagas
-  const [vagas, setVagas] = useState([]);
+  const [vagas, setVagas] = useState(() => {
+    return JSON.parse(localStorage.getItem("vagas")) || [];
+  });
+
+  // Sempre que mudar isLoggedIn, salva no localStorage
+  useEffect(() => {
+    localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
+  }, [isLoggedIn]);
+
+  // Salva candidatos no localStorage quando mudar
+  useEffect(() => {
+    localStorage.setItem("candidatos", JSON.stringify(candidatos));
+  }, [candidatos]);
+
+  // Salva vagas no localStorage quando mudar
+  useEffect(() => {
+    localStorage.setItem("vagas", JSON.stringify(vagas));
+  }, [vagas]);
 
   const handleLogin = () => setIsLoggedIn(true);
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentPage("dashboard");
+    // Se quiser limpar os dados ao sair, descomente abaixo:
+    // localStorage.clear();
   };
 
   if (!isLoggedIn) {

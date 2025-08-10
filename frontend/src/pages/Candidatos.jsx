@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function Candidatos({ candidatos, setCandidatos }) {
+function Candidatos() {
+  // Inicializa do localStorage ou começa com array vazio
+  const [candidatos, setCandidatos] = useState(() => {
+    const saved = localStorage.getItem("candidatos");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [abaAtiva, setAbaAtiva] = useState("form"); // form ou curriculo
 
   // Dados formulário geral
@@ -62,6 +68,11 @@ function Candidatos({ candidatos, setCandidatos }) {
     "SE - Aracaju",
     "TO - Palmas",
   ];
+
+  // SALVA no localStorage sempre que candidatos mudar
+  useEffect(() => {
+    localStorage.setItem("candidatos", JSON.stringify(candidatos));
+  }, [candidatos]);
 
   const handleFotoChange = (e) => {
     const file = e.target.files[0];
@@ -251,355 +262,196 @@ function Candidatos({ candidatos, setCandidatos }) {
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              gap: 20,
+              gap: "1rem 3rem",
+              alignItems: "center",
             }}
           >
-            <div>
-              <input
-                placeholder="Nome *"
-                value={novoNome}
-                onChange={(e) => setNovoNome(e.target.value)}
-                style={inputStyle}
+            <input
+              type="text"
+              placeholder="Nome"
+              value={novoNome}
+              onChange={(e) => setNovoNome(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Sobrenome"
+              value={sobrenome}
+              onChange={(e) => setSobrenome(e.target.value)}
+            />
+            <select
+              value={novaCidade}
+              onChange={(e) => setNovaCidade(e.target.value)}
+            >
+              <option value="">Selecione a cidade</option>
+              {cidadesDoBrasil.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              placeholder="Data de nascimento"
+              value={dataNascimento}
+              onChange={(e) => setDataNascimento(e.target.value)}
+            />
+            <textarea
+              placeholder="Sobre"
+              value={novoSobre}
+              onChange={(e) => setNovoSobre(e.target.value)}
+              rows={3}
+            />
+            <input
+              type="text"
+              placeholder="Vaga desejada"
+              value={novaVaga}
+              onChange={(e) => setNovaVaga(e.target.value)}
+            />
+            <select
+              value={novoStatus}
+              onChange={(e) => setNovoStatus(e.target.value)}
+            >
+              {statusOptions.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+            <input type="file" accept="image/*" onChange={handleFotoChange} />
+            {previewFoto && (
+              <img
+                src={previewFoto}
+                alt="Preview"
+                style={{ maxWidth: 120, borderRadius: 6 }}
               />
-              <input
-                placeholder="Sobrenome"
-                value={sobrenome}
-                onChange={(e) => setSobrenome(e.target.value)}
-                style={inputStyle}
-              />
-              <select
-                value={novaCidade}
-                onChange={(e) => setNovaCidade(e.target.value)}
-                style={inputStyle}
-              >
-                <option value="">Cidade *</option>
-                {cidadesDoBrasil.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="date"
-                value={dataNascimento}
-                onChange={(e) => setDataNascimento(e.target.value)}
-                style={inputStyle}
-                placeholder="Data de nascimento"
-              />
-              <textarea
-                placeholder="Sobre"
-                value={novoSobre}
-                onChange={(e) => setNovoSobre(e.target.value)}
-                style={{ ...inputStyle, height: 80 }}
-              />
-              <input
-                placeholder="Vaga desejada *"
-                value={novaVaga}
-                onChange={(e) => setNovaVaga(e.target.value)}
-                style={inputStyle}
-              />
-            </div>
-
-            <div>
-              <textarea
-                placeholder="Formação acadêmica"
-                value={formacaoAcademica}
-                onChange={(e) => setFormacaoAcademica(e.target.value)}
-                style={{ ...inputStyle, height: 70 }}
-              />
-              <input
-                type="email"
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={inputStyle}
-              />
-              <input
-                placeholder="Telefone"
-                value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
-                style={inputStyle}
-              />
-              <input
-                placeholder="Endereço"
-                value={endereco}
-                onChange={(e) => setEndereco(e.target.value)}
-                style={inputStyle}
-              />
-              <input
-                placeholder="CEP"
-                value={cep}
-                onChange={(e) => setCep(e.target.value)}
-                style={inputStyle}
-              />
-              <input
-                placeholder="Estado Civil"
-                value={estadoCivil}
-                onChange={(e) => setEstadoCivil(e.target.value)}
-                style={inputStyle}
-              />
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  marginTop: 5,
-                }}
-              >
-                <label>
-                  <input
-                    type="radio"
-                    checked={genero === "M"}
-                    onChange={() => setGenero("M")}
-                  />
-                  Masculino
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    checked={genero === "F"}
-                    onChange={() => setGenero("F")}
-                  />
-                  Feminino
-                </label>
-              </div>
-
-              <textarea
-                placeholder="Experiência profissional"
-                value={experiencia}
-                onChange={(e) => setExperiencia(e.target.value)}
-                style={{ ...inputStyle, height: 70 }}
-              />
-
-              <select
-                value={novoStatus}
-                onChange={(e) => setNovoStatus(e.target.value)}
-                style={{ ...inputStyle, marginTop: 10 }}
-              >
-                {statusOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-
-              {/* Observações */}
-              <div style={{ marginTop: 10 }}>
-                <label style={{ display: "block", fontWeight: "600" }}>
-                  Observações
-                </label>
-                <textarea
-                  placeholder="Notas sobre o candidato"
-                  value={observacoes}
-                  onChange={(e) => setObservacoes(e.target.value)}
-                  style={{ ...inputStyle, height: 80 }}
-                />
-              </div>
-
-              {/* Foto + currículo */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 20,
-                  marginTop: 15,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <label
-                    htmlFor="inputFoto3x4"
-                    style={{
-                      cursor: "pointer",
-                      backgroundColor: "#3b82f6",
-                      color: "#fff",
-                      padding: "8px 12px",
-                      borderRadius: 6,
-                      fontWeight: "600",
-                      userSelect: "none",
-                    }}
-                  >
-                    Adicionar Foto 3x4
-                  </label>
-                  <input
-                    id="inputFoto3x4"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFotoChange}
-                    style={{ display: "none" }}
-                  />
-                  {previewFoto && (
-                    <img
-                      src={previewFoto}
-                      alt="Preview"
-                      style={{
-                        width: 60,
-                        height: 80,
-                        objectFit: "cover",
-                        borderRadius: 6,
-                        border: "1px solid #ccc",
-                      }}
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="inputCurriculo"
-                    style={{
-                      cursor: "pointer",
-                      backgroundColor: "#22c55e",
-                      color: "#fff",
-                      padding: "8px 12px",
-                      borderRadius: 6,
-                      fontWeight: "600",
-                      userSelect: "none",
-                    }}
-                  >
-                    Adicionar Currículo
-                  </label>
-                  <input
-                    id="inputCurriculo"
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    style={{ display: "none" }}
-                  />
-                </div>
-              </div>
-            </div>
+            )}
+            <textarea
+              placeholder="Observações"
+              value={observacoes}
+              onChange={(e) => setObservacoes(e.target.value)}
+              rows={2}
+              style={{ gridColumn: "1 / 3" }}
+            />
+            <button
+              onClick={adicionarOuAtualizarCandidato}
+              style={{
+                gridColumn: "1 / 3",
+                padding: "10px 0",
+                borderRadius: 6,
+                background: "#007bff",
+                color: "white",
+                border: "none",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
+            </button>
           </div>
         )}
 
         {abaAtiva === "curriculo" && (
           <div
             style={{
-              background: "#fff",
-              borderRadius: 10,
-              padding: "1rem",
-              boxShadow: "0 6px 18px -4px rgba(0,0,0,0.1)",
-              marginBottom: 20,
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "1rem 3rem",
+              alignItems: "center",
             }}
           >
-            <p>
-              Use a aba Formulário para adicionar ou editar os dados do candidato,
-              incluindo foto 3x4 e currículo. A lista de candidatos está abaixo.
-            </p>
+            <input
+              type="text"
+              placeholder="Formação Acadêmica"
+              value={formacaoAcademica}
+              onChange={(e) => setFormacaoAcademica(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="tel"
+              placeholder="Telefone"
+              value={telefone}
+              onChange={(e) => setTelefone(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Endereço"
+              value={endereco}
+              onChange={(e) => setEndereco(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="CEP"
+              value={cep}
+              onChange={(e) => setCep(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Estado Civil"
+              value={estadoCivil}
+              onChange={(e) => setEstadoCivil(e.target.value)}
+            />
+            <select
+              value={genero}
+              onChange={(e) => setGenero(e.target.value)}
+            >
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+              <option value="O">Outro</option>
+            </select>
+            <textarea
+              placeholder="Experiência"
+              value={experiencia}
+              onChange={(e) => setExperiencia(e.target.value)}
+              rows={3}
+            />
           </div>
         )}
-
-        <div style={{ marginTop: 10 }}>
-          <button
-            onClick={adicionarOuAtualizarCandidato}
-            style={{
-              backgroundColor: "#2563eb",
-              color: "white",
-              padding: "12px 18px",
-              fontWeight: "600",
-              borderRadius: 6,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
-          </button>
-          {editandoId && (
-            <button
-              onClick={limparFormulario}
-              style={{
-                marginLeft: 12,
-                backgroundColor: "#ef4444",
-                color: "white",
-                padding: "12px 18px",
-                fontWeight: "600",
-                borderRadius: 6,
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Cancelar Edição
-            </button>
-          )}
-        </div>
       </div>
 
-      {/* Lista de candidatos sempre visível */}
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 10,
-          padding: "1rem",
-          boxShadow: "0 6px 18px -4px rgba(0,0,0,0.1)",
-        }}
-      >
-        {candidatos.length === 0 && <p>Nenhum candidato cadastrado.</p>}
+      {/* Lista de candidatos */}
+      <div>
+        {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
         {candidatos.map((c) => (
           <div
             key={c.id}
             style={{
-              borderBottom: "1px solid #eee",
-              paddingBottom: 12,
-              marginBottom: 12,
+              marginBottom: 10,
+              padding: 10,
+              background: "#fff",
+              borderRadius: 6,
+              boxShadow: "0 3px 8px -2px rgba(0,0,0,0.1)",
               display: "flex",
               alignItems: "center",
-              gap: 15,
+              gap: 10,
             }}
           >
-            {c.foto && (
-              <img
-                src={c.foto}
-                alt={`${c.nome} ${c.sobrenome}`}
-                style={{
-                  width: 60,
-                  height: 80,
-                  objectFit: "cover",
-                  borderRadius: 6,
-                  border: "1px solid #ccc",
-                }}
-              />
-            )}
+            <img
+              src={
+                c.foto ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              alt="Foto"
+              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }}
+            />
             <div style={{ flex: 1 }}>
-              <strong>
+              <div style={{ fontWeight: "bold" }}>
                 {c.nome} {c.sobrenome}
-              </strong>{" "}
-              - {c.estado ? `${c.estado} - ` : ""}
-              {c.cidade}
-              <br />
-              <em>Vaga:</em> {c.vaga}
-              <br />
-              <em>Status:</em>{" "}
-              <span
-                style={{
-                  color:
-                    c.status === "Contratado"
-                      ? "green"
-                      : c.status === "Não apto no momento"
-                      ? "red"
-                      : c.status === "Em andamento"
-                      ? "orange"
-                      : "gray",
-                  fontWeight: "600",
-                }}
-              >
-                {c.status}
-              </span>
-              {c.observacoes && (
-                <>
-                  <br />
-                  <div style={{ marginTop: 4 }}>
-                    <strong>Observações:</strong>{" "}
-                    <span style={{ display: "inline-block", maxWidth: 300, whiteSpace: "pre-wrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {c.observacoes.length > 120
-                        ? c.observacoes.slice(0, 117) + "..."
-                        : c.observacoes}
-                    </span>
-                  </div>
-                </>
-              )}
+              </div>
+              <div>
+                {c.estado ? `${c.estado} - ` : ""}
+                {c.cidade} | Vaga: {c.vaga}
+              </div>
+              <div>Status: {c.status}</div>
             </div>
-            <button onClick={() => editarCandidato(c)} style={btnEditStyle}>
+            <button onClick={() => editarCandidato(c)} style={btnStyle}>
               Editar
             </button>
-            <button onClick={() => excluirCandidato(c.id)} style={btnDelStyle}>
+            <button onClick={() => excluirCandidato(c.id)} style={btnStyle}>
               Excluir
             </button>
           </div>
@@ -609,55 +461,35 @@ function Candidatos({ candidatos, setCandidatos }) {
   );
 }
 
-// Estilos reutilizáveis
-const inputStyle = {
-  width: "100%",
-  padding: "10px 12px",
-  marginBottom: 12,
-  borderRadius: 6,
-  border: "1px solid #ccc",
-  fontSize: 14,
-  boxSizing: "border-box",
-};
-
 const activeTabStyle = {
-  backgroundColor: "#3b82f6",
-  color: "#fff",
-  padding: "8px 16px",
-  borderRadius: 6,
-  fontWeight: "600",
+  borderBottom: "2px solid #007bff",
+  background: "#e6f0ff",
+  fontWeight: "bold",
   cursor: "pointer",
-  border: "none",
+  padding: "5px 15px",
+  borderRadius: "6px 6px 0 0",
+  userSelect: "none",
+  outline: "none",
 };
 
 const inactiveTabStyle = {
-  backgroundColor: "#e5e7eb",
-  color: "#333",
-  padding: "8px 16px",
-  borderRadius: 6,
-  fontWeight: "600",
+  borderBottom: "none",
+  background: "#fff",
+  fontWeight: "normal",
   cursor: "pointer",
-  border: "none",
+  padding: "5px 15px",
+  borderRadius: "6px 6px 0 0",
+  userSelect: "none",
+  outline: "none",
 };
 
-const btnEditStyle = {
-  backgroundColor: "#fbbf24",
-  border: "none",
-  padding: "6px 12px",
+const btnStyle = {
   borderRadius: 6,
-  cursor: "pointer",
-  fontWeight: "600",
-};
-
-const btnDelStyle = {
-  backgroundColor: "#ef4444",
   border: "none",
-  padding: "6px 12px",
-  borderRadius: 6,
+  padding: "5px 10px",
   cursor: "pointer",
-  fontWeight: "600",
+  background: "#007bff",
   color: "#fff",
-  marginLeft: 8,
 };
 
 export default Candidatos;
