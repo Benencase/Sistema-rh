@@ -3,11 +3,18 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
+
 // A chave agora é lida de uma variável de ambiente.
 // Use "12345678" apenas em desenvolvimento local.
 const CHAVE_FIXA = process.env.CHAVE_FIXA || "12345678";
 
-app.use(cors());
+// Configuração do CORS para liberar apenas o seu frontend no Render
+app.use(cors({
+  origin: 'https://frontend-0pg4.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -26,20 +33,18 @@ app.post('/auth', (req, res) => {
   res.status(401).json({ valid: false, message: 'Chave inválida' });
 });
 
-// Adicione este código para servir os arquivos estáticos do frontend em produção
+// Servir frontend em produção
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
-    
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
-    });
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+  });
 }
 
-// O servidor agora usa a porta do ambiente de produção (RENDER) ou a porta 3001 localmente
+// Porta do servidor
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Chave atual: ${CHAVE_FIXA}`);
 });
-
-// Ajuste final para o Render.
