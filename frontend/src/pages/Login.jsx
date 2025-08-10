@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api } from "./api"; // importando o api.js
+import { api } from "../api"; // ajuste o caminho conforme sua estrutura de pastas
 
 function Login({ onLogin }) {
   const [key, setKey] = useState("");
@@ -16,7 +16,6 @@ function Login({ onLogin }) {
     setError(null);
 
     try {
-      // usando o api.post que já tem a baseURL configurada
       const res = await api.post("/auth", { key });
       if (res.data.valid) {
         onLogin(res.data.expiresAt);
