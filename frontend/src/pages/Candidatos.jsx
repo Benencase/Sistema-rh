@@ -11,7 +11,9 @@ function Candidatos() {
 
   // Dados formulário geral
   const [novoNome, setNovoNome] = useState("");
+  const [sobrenome, setSobrenome] = useState("");
   const [novaCidade, setNovaCidade] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
   const [novoSobre, setNovoSobre] = useState("");
   const [novaVaga, setNovaVaga] = useState("");
   const [novoStatus, setNovoStatus] = useState("Não selecionado");
@@ -19,10 +21,9 @@ function Candidatos() {
   const [novaFoto, setNovaFoto] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
   const [observacoes, setObservacoes] = useState("");
+  const [novaAvaliacao, setNovaAvaliacao] = useState(""); // avaliação comportamental
 
   // Dados currículo complementares
-  const [sobrenome, setSobrenome] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
   const [formacaoAcademica, setFormacaoAcademica] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -108,6 +109,7 @@ function Candidatos() {
     setPreviewFoto(null);
     setEditandoId(null);
     setObservacoes("");
+    setNovaAvaliacao(""); // limpar avaliação
   };
 
   const adicionarOuAtualizarCandidato = () => {
@@ -151,6 +153,7 @@ function Candidatos() {
                 status: novoStatus,
                 foto: previewFoto || c.foto,
                 observacoes: observacoes.trim(),
+                avaliacaoComportamental: novaAvaliacao.trim(), // salva avaliação
               }
             : c
         )
@@ -179,6 +182,7 @@ function Candidatos() {
           status: novoStatus,
           foto: previewFoto,
           observacoes: observacoes.trim(),
+          avaliacaoComportamental: novaAvaliacao.trim(), // salva avaliação
         },
       ]);
     }
@@ -209,6 +213,7 @@ function Candidatos() {
     setPreviewFoto(c.foto || null);
     setNovaFoto(null);
     setObservacoes(c.observacoes || "");
+    setNovaAvaliacao(c.avaliacaoComportamental || ""); // carrega avaliação
   };
 
   const excluirCandidato = (id) => {
@@ -262,13 +267,14 @@ function Candidatos() {
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              gap: "1rem 3rem",
-              alignItems: "center",
+              gap: 15,
+              marginBottom: 10,
             }}
           >
+            {/* Dados básicos */}
             <input
               type="text"
-              placeholder="Nome"
+              placeholder="Nome*"
               value={novoNome}
               onChange={(e) => setNovoNome(e.target.value)}
             />
@@ -282,7 +288,7 @@ function Candidatos() {
               value={novaCidade}
               onChange={(e) => setNovaCidade(e.target.value)}
             >
-              <option value="">Selecione a cidade</option>
+              <option value="">Escolha a cidade*</option>
               {cidadesDoBrasil.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -296,16 +302,31 @@ function Candidatos() {
               onChange={(e) => setDataNascimento(e.target.value)}
             />
             <textarea
-              placeholder="Sobre"
+              placeholder="Sobre (breve descrição)"
               value={novoSobre}
               onChange={(e) => setNovoSobre(e.target.value)}
               rows={3}
+              style={{ gridColumn: "1 / 3" }}
             />
             <input
               type="text"
-              placeholder="Vaga desejada"
+              placeholder="Vaga desejada*"
               value={novaVaga}
               onChange={(e) => setNovaVaga(e.target.value)}
+            />
+            <textarea
+              placeholder="Observações"
+              value={observacoes}
+              onChange={(e) => setObservacoes(e.target.value)}
+              rows={3}
+              style={{ gridColumn: "1 / 3" }}
+            />
+            <textarea
+              placeholder="Avaliação Comportamental"
+              value={novaAvaliacao}
+              onChange={(e) => setNovaAvaliacao(e.target.value)}
+              rows={3}
+              style={{ gridColumn: "1 / 3" }}
             />
             <select
               value={novoStatus}
@@ -317,36 +338,30 @@ function Candidatos() {
                 </option>
               ))}
             </select>
-            <input type="file" accept="image/*" onChange={handleFotoChange} />
-            {previewFoto && (
-              <img
-                src={previewFoto}
-                alt="Preview"
-                style={{ maxWidth: 120, borderRadius: 6 }}
-              />
-            )}
-            <textarea
-              placeholder="Observações"
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              rows={2}
-              style={{ gridColumn: "1 / 3" }}
-            />
+            <div>
+              <input type="file" onChange={handleFotoChange} />
+              {previewFoto && (
+                <img
+                  src={previewFoto}
+                  alt="Preview"
+                  style={{ maxWidth: 120, marginTop: 5, borderRadius: 6 }}
+                />
+              )}
+            </div>
             <button
+              style={{ gridColumn: "1 / 3" }}
               onClick={adicionarOuAtualizarCandidato}
-              style={{
-                gridColumn: "1 / 3",
-                padding: "10px 0",
-                borderRadius: 6,
-                background: "#007bff",
-                color: "white",
-                border: "none",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
             >
-              {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
+              {editandoId ? "Atualizar" : "Adicionar"} candidato
             </button>
+            {editandoId && (
+              <button
+                style={{ gridColumn: "1 / 3", backgroundColor: "#999" }}
+                onClick={limparFormulario}
+              >
+                Cancelar edição
+              </button>
+            )}
           </div>
         )}
 
@@ -355,8 +370,8 @@ function Candidatos() {
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              gap: "1rem 3rem",
-              alignItems: "center",
+              gap: 15,
+              marginBottom: 10,
             }}
           >
             <input
@@ -391,105 +406,91 @@ function Candidatos() {
             />
             <input
               type="text"
-              placeholder="Estado Civil"
+              placeholder="Estado civil"
               value={estadoCivil}
               onChange={(e) => setEstadoCivil(e.target.value)}
             />
             <select
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
+              style={{ gridColumn: "1 / 2" }}
             >
               <option value="M">Masculino</option>
               <option value="F">Feminino</option>
               <option value="O">Outro</option>
             </select>
             <textarea
-              placeholder="Experiência"
+              placeholder="Experiência profissional"
               value={experiencia}
               onChange={(e) => setExperiencia(e.target.value)}
               rows={3}
+              style={{ gridColumn: "1 / 3" }}
             />
           </div>
         )}
       </div>
 
-      {/* Lista de candidatos */}
-      <div>
-        {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
-        {candidatos.map((c) => (
-          <div
-            key={c.id}
-            style={{
-              marginBottom: 10,
-              padding: 10,
-              background: "#fff",
-              borderRadius: 6,
-              boxShadow: "0 3px 8px -2px rgba(0,0,0,0.1)",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <img
-              src={
-                c.foto ||
-                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-              }
-              alt="Foto"
-              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }}
-            />
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "bold" }}>
-                {c.nome} {c.sobrenome}
-              </div>
-              <div>
-                {c.estado ? `${c.estado} - ` : ""}
-                {c.cidade} | Vaga: {c.vaga}
-              </div>
-              <div>Status: {c.status}</div>
+      <h3>Candidatos cadastrados</h3>
+      {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
+      {candidatos.map((c) => (
+        <div
+          key={c.id}
+          style={{
+            border: "1px solid #ddd",
+            borderRadius: 8,
+            padding: 15,
+            marginBottom: 15,
+            display: "flex",
+            gap: 15,
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={c.foto || "https://via.placeholder.com/80x80?text=Foto"}
+            alt={c.nome}
+            style={{ width: 80, height: 80, borderRadius: 8, objectFit: "cover" }}
+          />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: "bold", fontSize: 18 }}>
+              {c.nome} {c.sobrenome}
             </div>
-            <button onClick={() => editarCandidato(c)} style={btnStyle}>
-              Editar
-            </button>
-            <button onClick={() => excluirCandidato(c.id)} style={btnStyle}>
-              Excluir
-            </button>
+            <div>
+              {c.estado} - {c.cidade}
+            </div>
+            <div>Vaga: {c.vaga}</div>
+            <div>Status: {c.status}</div>
+            <div>Avaliação: {c.avaliacaoComportamental || "Não avaliado"}</div>
+            {c.observacoes && (
+              <div style={{ fontStyle: "italic", color: "#555" }}>
+                Observações: {c.observacoes}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+          <div>
+            <button onClick={() => editarCandidato(c)}>✏️ Editar</button>{" "}
+            <button onClick={() => excluirCandidato(c.id)}>❌ Excluir</button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
 const activeTabStyle = {
-  borderBottom: "2px solid #007bff",
-  background: "#e6f0ff",
+  borderBottom: "2px solid #000",
   fontWeight: "bold",
+  background: "none",
+  border: "none",
   cursor: "pointer",
-  padding: "5px 15px",
-  borderRadius: "6px 6px 0 0",
-  userSelect: "none",
-  outline: "none",
+  paddingBottom: 5,
 };
 
 const inactiveTabStyle = {
-  borderBottom: "none",
-  background: "#fff",
-  fontWeight: "normal",
-  cursor: "pointer",
-  padding: "5px 15px",
-  borderRadius: "6px 6px 0 0",
-  userSelect: "none",
-  outline: "none",
-};
-
-const btnStyle = {
-  borderRadius: 6,
+  background: "none",
   border: "none",
-  padding: "5px 10px",
   cursor: "pointer",
-  background: "#007bff",
-  color: "#fff",
+  paddingBottom: 5,
+  color: "#555",
 };
 
 export default Candidatos;
