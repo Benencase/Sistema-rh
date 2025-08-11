@@ -13,6 +13,8 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
     "Motivação para o Trabalho",
     "Serenidade Aparente",
     "Assertividade",
+    "Organização",
+    "Auto Desenvolvimento"
   ];
 
   const handleNotaChange = (i, valor) => {
@@ -24,6 +26,12 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const handleObservacoesChange = (valor) => {
     setAvaliacao({ ...avaliacao, observacoes: valor });
   };
+
+  const somaTotal = (avaliacao?.notas || [])
+    .map((n) => parseInt(n) || 0)
+    .reduce((a, b) => a + b, 0);
+
+  const media = fatores.length > 0 ? (somaTotal / fatores.length).toFixed(2) : "0.00";
 
   return (
     <div style={{ marginTop: 20, gridColumn: "1 / 3", background: "#f0f0f0", padding: 15, borderRadius: 8 }}>
@@ -57,6 +65,13 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
           ))}
         </tbody>
       </table>
+
+      {/* Soma e Média */}
+      <div style={{ marginTop: 16 }}>
+        <strong>Soma Total:</strong> {somaTotal} <br />
+        <strong>Média:</strong> {media}
+      </div>
+
       <div style={{ marginTop: 16 }}>
         <label style={{ display: "block", marginBottom: 6 }}>Observações gerais:</label>
         <textarea
@@ -106,33 +121,11 @@ function Candidatos() {
   ];
 
   const cidadesDoBrasil = [
-    "AC - Rio Branco",
-    "AL - Maceió",
-    "AP - Macapá",
-    "AM - Manaus",
-    "BA - Salvador",
-    "CE - Fortaleza",
-    "DF - Brasília",
-    "ES - Vitória",
-    "GO - Goiânia",
-    "MA - São Luís",
-    "MT - Cuiabá",
-    "MS - Campo Grande",
-    "MG - Belo Horizonte",
-    "PA - Belém",
-    "PB - João Pessoa",
-    "PR - Curitiba",
-    "PE - Recife",
-    "PI - Teresina",
-    "RJ - Rio de Janeiro",
-    "RN - Natal",
-    "RS - Porto Alegre",
-    "RO - Porto Velho",
-    "RR - Boa Vista",
-    "SC - Florianópolis",
-    "SP - São Paulo",
-    "SE - Aracaju",
-    "TO - Palmas",
+    "AC - Rio Branco","AL - Maceió","AP - Macapá","AM - Manaus","BA - Salvador","CE - Fortaleza",
+    "DF - Brasília","ES - Vitória","GO - Goiânia","MA - São Luís","MT - Cuiabá","MS - Campo Grande",
+    "MG - Belo Horizonte","PA - Belém","PB - João Pessoa","PR - Curitiba","PE - Recife","PI - Teresina",
+    "RJ - Rio de Janeiro","RN - Natal","RS - Porto Alegre","RO - Porto Velho","RR - Boa Vista","SC - Florianópolis",
+    "SP - São Paulo","SE - Aracaju","TO - Palmas"
   ];
 
   useEffect(() => {
@@ -187,65 +180,29 @@ function Candidatos() {
       return;
     }
 
-    const [uf, cidade] = novaCidade.includes(" - ")
-      ? novaCidade.split(" - ")
-      : ["", novaCidade];
+    const [uf, cidade] = novaCidade.includes(" - ") ? novaCidade.split(" - ") : ["", novaCidade];
 
     if (editandoId) {
       setCandidatos((old) =>
         old.map((c) =>
           c.id === editandoId
-            ? {
-                ...c,
-                nome: novoNome.trim(),
-                sobrenome: sobrenome.trim(),
-                cidade,
-                estado: uf,
-                dataNascimento,
-                sobre: novoSobre.trim(),
-                vaga: novaVaga.trim(),
-                formacaoAcademica: formacaoAcademica.trim(),
-                email: email.trim(),
-                telefone: telefone.trim(),
-                endereco: endereco.trim(),
-                cep: cep.trim(),
-                estadoCivil: estadoCivil.trim(),
-                genero,
-                experiencia: experiencia.trim(),
-                status: novoStatus,
-                foto: previewFoto || c.foto,
-                observacoes: observacoes.trim(),
-                avaliacao: avaliacao || c.avaliacao || null,
-              }
+            ? { ...c, nome: novoNome.trim(), sobrenome: sobrenome.trim(), cidade, estado: uf, dataNascimento,
+                sobre: novoSobre.trim(), vaga: novaVaga.trim(), formacaoAcademica: formacaoAcademica.trim(),
+                email: email.trim(), telefone: telefone.trim(), endereco: endereco.trim(), cep: cep.trim(),
+                estadoCivil: estadoCivil.trim(), genero, experiencia: experiencia.trim(), status: novoStatus,
+                foto: previewFoto || c.foto, observacoes: observacoes.trim(),
+                avaliacao: avaliacao || c.avaliacao || null }
             : c
         )
       );
     } else {
       setCandidatos((old) => [
         ...old,
-        {
-          id: Date.now(),
-          nome: novoNome.trim(),
-          sobrenome: sobrenome.trim(),
-          cidade,
-          estado: uf,
-          dataNascimento,
-          sobre: novoSobre.trim(),
-          vaga: novaVaga.trim(),
-          formacaoAcademica: formacaoAcademica.trim(),
-          email: email.trim(),
-          telefone: telefone.trim(),
-          endereco: endereco.trim(),
-          cep: cep.trim(),
-          estadoCivil: estadoCivil.trim(),
-          genero,
-          experiencia: experiencia.trim(),
-          criadoEm: new Date().toISOString().slice(0, 10),
-          status: novoStatus,
-          foto: previewFoto,
-          observacoes: observacoes.trim(),
-          avaliacao: avaliacao,
-        },
+        { id: Date.now(), nome: novoNome.trim(), sobrenome: sobrenome.trim(), cidade, estado: uf,
+          dataNascimento, sobre: novoSobre.trim(), vaga: novaVaga.trim(), formacaoAcademica: formacaoAcademica.trim(),
+          email: email.trim(), telefone: telefone.trim(), endereco: endereco.trim(), cep: cep.trim(),
+          estadoCivil: estadoCivil.trim(), genero, experiencia: experiencia.trim(), criadoEm: new Date().toISOString().slice(0, 10),
+          status: novoStatus, foto: previewFoto, observacoes: observacoes.trim(), avaliacao: avaliacao }
       ]);
     }
 
@@ -288,26 +245,44 @@ function Candidatos() {
       {abaAtiva === "form" && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, background: "#fafafa", padding: 20, borderRadius: 10 }}>
           {/* Campos do formulário */}
-          {/* ... mesmos campos que você já tinha ... */}
-
-          {/* Foto */}
-          <div style={{ gridColumn: "1 / 3" }}>
-            <label>
-              Foto:<br />
-              <input type="file" accept="image/*" onChange={handleFotoChange} />
-              {previewFoto && <img src={previewFoto} alt="preview" style={{ marginTop: 10, maxWidth: 150, borderRadius: 8 }} />}
+          <div>
+            <label>Nome*:<br /><input type="text" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} /></label>
+          </div>
+          <div>
+            <label>Sobrenome:<br /><input type="text" value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} /></label>
+          </div>
+          <div>
+            <label>Cidade*:<br />
+              <input list="cidadesDoBrasil" value={novaCidade} onChange={(e) => setNovaCidade(e.target.value)} />
+              <datalist id="cidadesDoBrasil">{cidadesDoBrasil.map((c, i) => <option key={i} value={c} />)}</datalist>
             </label>
           </div>
+          <div>
+            <label>Data Nascimento:<br /><input type="date" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} /></label>
+          </div>
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label>Sobre:<br /><textarea rows={3} value={novoSobre} onChange={(e) => setNovoSobre(e.target.value)} /></label>
+          </div>
+          <div>
+            <label>Vaga*:<br /><input type="text" value={novaVaga} onChange={(e) => setNovaVaga(e.target.value)} /></label>
+          </div>
+          <div>
+            <label>Status:<br />
+              <select value={novoStatus} onChange={(e) => setNovoStatus(e.target.value)}>
+                {statusOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            </label>
+          </div>
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label>Foto:<br /><input type="file" accept="image/*" onChange={handleFotoChange} />{previewFoto && <img src={previewFoto} alt="preview" style={{ marginTop: 10, maxWidth: 150, borderRadius: 8 }} />}</label>
+          </div>
 
-          {/* Avaliação Comportamental */}
+          {/* Avaliação nova */}
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
 
-          {/* Botões */}
           <div style={{ gridColumn: "1 / 3", marginTop: 20 }}>
-            <button onClick={adicionarOuAtualizarCandidato}>
-              {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
-            </button>
-            {editandoId && <button onClick={limparFormulario} style={{ marginLeft: 10 }} type="button">Cancelar</button>}
+            <button onClick={adicionarOuAtualizarCandidato}>{editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}</button>
+            {editandoId && <button onClick={limparFormulario} style={{ marginLeft: 10 }}>Cancelar</button>}
           </div>
         </div>
       )}
@@ -323,35 +298,23 @@ function Candidatos() {
                 <br />Cidade: {c.estado} - {c.cidade}
                 {c.avaliacao && (
                   <div style={{ marginTop: 10 }}>
-                    <strong>Avaliação Comportamental:</strong>
+                    <strong>Avaliação:</strong>
                     <table border="1" cellPadding="5" style={{ marginTop: 5, borderCollapse: "collapse" }}>
                       <thead>
-                        <tr>
-                          <th>Fator</th>
-                          <th>Nota</th>
-                        </tr>
+                        <tr><th>Fator</th><th>Nota</th></tr>
                       </thead>
                       <tbody>
                         {[
-                          "Postura",
-                          "Comunicação",
-                          "Habilidade Profissional",
-                          "Comprometimento",
-                          "Capacidade de Adaptação",
-                          "Iniciativa / Liderança",
-                          "Comportamento Ético",
-                          "Maturidade Emocional",
-                          "Motivação para o Trabalho",
-                          "Serenidade Aparente",
-                          "Assertividade",
+                          "Postura","Comunicação","Habilidade Profissional","Comprometimento","Capacidade de Adaptação",
+                          "Iniciativa / Liderança","Comportamento Ético","Maturidade Emocional","Motivação para o Trabalho",
+                          "Serenidade Aparente","Assertividade","Organização","Auto Desenvolvimento"
                         ].map((fator, idx) => (
-                          <tr key={idx}>
-                            <td>{fator}</td>
-                            <td>{c.avaliacao.notas?.[idx] || "-"}</td>
-                          </tr>
+                          <tr key={idx}><td>{fator}</td><td>{c.avaliacao.notas?.[idx] || "-"}</td></tr>
                         ))}
                       </tbody>
                     </table>
+                    <p><strong>Soma Total:</strong> {c.avaliacao.notas?.reduce((a, b) => a + (parseInt(b) || 0), 0) || 0}</p>
+                    <p><strong>Média:</strong> {c.avaliacao.notas?.length ? ((c.avaliacao.notas.reduce((a, b) => a + (parseInt(b) || 0), 0) / c.avaliacao.notas.length).toFixed(2)) : "0.00"}</p>
                     <p><strong>Observações:</strong> {c.avaliacao.observacoes || "Nenhuma"}</p>
                   </div>
                 )}
