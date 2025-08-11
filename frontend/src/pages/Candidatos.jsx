@@ -92,6 +92,7 @@ function Candidatos() {
   const [endereco, setEndereco] = useState("");
   const [genero, setGenero] = useState("M");
   const [avaliacao, setAvaliacao] = useState(null);
+  const [sobre, setSobre] = useState("");
 
   const statusOptions = [
     "Não selecionado",
@@ -142,6 +143,7 @@ function Candidatos() {
     setPreviewFoto(null);
     setEditandoId(null);
     setAvaliacao(null);
+    setSobre("");
   };
 
   const adicionarOuAtualizarCandidato = () => {
@@ -161,23 +163,49 @@ function Candidatos() {
       setCandidatos((old) =>
         old.map((c) =>
           c.id === editandoId
-            ? { ...c, nome: novoNome.trim(), sobrenome: sobrenome.trim(), cidade, estado: uf, dataNascimento,
-                vaga: novaVaga.trim(), formacaoAcademica: formacaoAcademica.trim(),
-                email: email.trim(), telefone: telefone.trim(), endereco: endereco.trim(),
-                genero, status: novoStatus,
+            ? {
+                ...c,
+                nome: novoNome.trim(),
+                sobrenome: sobrenome.trim(),
+                cidade,
+                estado: uf,
+                dataNascimento,
+                vaga: novaVaga.trim(),
+                formacaoAcademica: formacaoAcademica.trim(),
+                email: email.trim(),
+                telefone: telefone.trim(),
+                endereco: endereco.trim(),
+                genero,
+                status: novoStatus,
                 foto: previewFoto || c.foto,
-                avaliacao: avaliacao || c.avaliacao || null }
+                avaliacao: avaliacao || c.avaliacao || null,
+                sobre: sobre.trim(),
+              }
             : c
         )
       );
     } else {
       setCandidatos((old) => [
         ...old,
-        { id: Date.now(), nome: novoNome.trim(), sobrenome: sobrenome.trim(), cidade, estado: uf,
-          dataNascimento, vaga: novaVaga.trim(), formacaoAcademica: formacaoAcademica.trim(),
-          email: email.trim(), telefone: telefone.trim(), endereco: endereco.trim(),
-          genero, criadoEm: new Date().toISOString().slice(0, 10),
-          status: novoStatus, foto: previewFoto, avaliacao: avaliacao }
+        {
+          id: Date.now(),
+          nome: novoNome.trim(),
+          sobrenome: sobrenome.trim(),
+          cidade,
+          estado: uf,
+          dataNascimento,
+          vaga: novaVaga.trim(),
+          formacaoAcademica: formacaoAcademica.trim(),
+          email: email.trim(),
+          telefone: telefone.trim(),
+          endereco: endereco.trim(),
+          genero,
+          criadoEm: new Date().toISOString().slice(0, 10),
+          status: novoStatus,
+          foto: previewFoto,
+          avaliacao: avaliacao,
+          sobre: sobre.trim(),
+        },
       ]);
     }
 
@@ -201,6 +229,7 @@ function Candidatos() {
     setPreviewFoto(c.foto || null);
     setNovaFoto(null);
     setAvaliacao(c.avaliacao || null);
+    setSobre(c.sobre || "");
     setAbaAtiva("form");
   };
 
@@ -244,6 +273,13 @@ function Candidatos() {
                 <input type="date" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} />
               </label>
             </div>
+
+            <div>
+              <label>Vaga Desejada*:<br />
+                <input type="text" value={novaVaga} onChange={(e) => setNovaVaga(e.target.value)} />
+              </label>
+            </div>
+
             <div>
               <label>Status:<br />
                 <select value={novoStatus} onChange={(e) => setNovoStatus(e.target.value)}>
@@ -251,32 +287,38 @@ function Candidatos() {
                 </select>
               </label>
             </div>
+
             <div style={{ gridColumn: "1 / 3" }}>
               <label>Foto:<br />
                 <input type="file" accept="image/*" onChange={handleFotoChange} />
                 {previewFoto && <img src={previewFoto} alt="preview" style={{ marginTop: 10, maxWidth: 150, borderRadius: 8 }} />}
               </label>
             </div>
+
             <div>
               <label>Formação Acadêmica:<br />
                 <input type="text" value={formacaoAcademica} onChange={(e) => setFormacaoAcademica(e.target.value)} />
               </label>
             </div>
+
             <div>
               <label>Email:<br />
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               </label>
             </div>
+
             <div>
               <label>Telefone:<br />
                 <input type="tel" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
               </label>
             </div>
+
             <div>
               <label>Endereço:<br />
                 <input type="text" value={endereco} onChange={(e) => setEndereco(e.target.value)} />
               </label>
             </div>
+
             <div>
               <label>Gênero:<br />
                 <select value={genero} onChange={(e) => setGenero(e.target.value)}>
@@ -289,12 +331,24 @@ function Candidatos() {
 
             <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
 
-            <div style={{ gridColumn: "1 / 3", marginTop: 20 }}>
-              <button onClick={adicionarOuAtualizarCandidato} style={{ padding: "10px 20px" }}>
+            <div style={{ gridColumn: "1 / 3", marginTop: 10 }}>
+              <label>Sobre o Candidato:<br />
+                <textarea
+                  rows={4}
+                  style={{ width: "100%", resize: "vertical" }}
+                  value={sobre}
+                  onChange={(e) => setSobre(e.target.value)}
+                  placeholder="Escreva uma breve descrição sobre o candidato..."
+                />
+              </label>
+            </div>
+
+            <div style={{ gridColumn: "1 / 3", marginTop: 20, textAlign: "center" }}>
+              <button onClick={adicionarOuAtualizarCandidato} style={{ padding: "10px 30px", fontSize: 16 }}>
                 {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
               </button>
               {editandoId && (
-                <button onClick={limparFormulario} style={{ marginLeft: 10, padding: "10px 20px" }}>
+                <button onClick={limparFormulario} style={{ marginLeft: 10, padding: "10px 30px", fontSize: 16 }}>
                   Cancelar
                 </button>
               )}
@@ -349,6 +403,7 @@ function Candidatos() {
                 <strong>{c.nome} {c.sobrenome}</strong><br />
                 <small>{c.estado} - {c.cidade}</small><br />
                 <small>Data Nasc.: {c.dataNascimento}</small><br />
+                <small>Vaga Desejada: {c.vaga}</small><br />
                 <small>Status: {c.status}</small><br />
                 <small>Formação Acadêmica: {c.formacaoAcademica}</small><br />
                 <small>Email: {c.email}</small><br />
@@ -362,10 +417,22 @@ function Candidatos() {
                     <ul style={{ marginTop: 4, paddingLeft: 20 }}>
                       {(c.avaliacao.notas || []).map((nota, idx) => (
                         <li key={idx}>
-                          {["Postura", "Comunicação", "Habilidade Profissional", "Comprometimento", "Capacidade de Adaptação", "Iniciativa / Liderança", "Comportamento Ético", "Maturidade Emocional", "Motivação para o Trabalho", "Serenidade Aparente", "Assertividade", "Organização", "Auto Desenvolvimento"][idx]}: {nota}
+                          {[
+                            "Postura", "Comunicação", "Habilidade Profissional", "Comprometimento",
+                            "Capacidade de Adaptação", "Iniciativa / Liderança", "Comportamento Ético",
+                            "Maturidade Emocional", "Motivação para o Trabalho", "Serenidade Aparente",
+                            "Assertividade", "Organização", "Auto Desenvolvimento"
+                          ][idx]}: {nota}
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {c.sobre && (
+                  <div style={{ marginTop: 8, padding: 8, background: "#f7f7f7", borderRadius: 6, whiteSpace: "pre-wrap" }}>
+                    <strong>Sobre o Candidato:</strong>
+                    <p>{c.sobre}</p>
                   </div>
                 )}
               </div>
