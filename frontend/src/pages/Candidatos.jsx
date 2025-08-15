@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-// Toolbar do editor
 const toolbarOptions = [
   [{ 'header': [1, 2, 3, false] }],
   ['bold', 'italic', 'underline', 'strike'],
@@ -12,7 +11,6 @@ const toolbarOptions = [
   ['clean']
 ];
 
-// Lista de capitais do Brasil
 const capitaisBrasil = [
   "Rio Branco", "Maceió", "Macapá", "Manaus", "Salvador", "Fortaleza", "Brasília",
   "Vitória", "Goiânia", "São Luís", "Cuiabá", "Campo Grande", "Belo Horizonte",
@@ -21,7 +19,6 @@ const capitaisBrasil = [
   "Palmas"
 ];
 
-// Componente Editor
 function Editor({ label, value, setValue }) {
   return (
     <div style={{ gridColumn: "1 / span 2", marginBottom: 20 }}>
@@ -31,12 +28,7 @@ function Editor({ label, value, setValue }) {
         value={value}
         onChange={setValue}
         modules={{ toolbar: toolbarOptions }}
-        style={{
-          height: 150,
-          borderRadius: 6,
-          background: "#fff",
-          border: "1px solid #ccc"
-        }}
+        style={{ height: 150, borderRadius: 6, background: "#fff", border: "1px solid #ccc" }}
       />
     </div>
   );
@@ -46,7 +38,6 @@ function Candidatos() {
   const [candidatos, setCandidatos] = useState([]);
   const [abaAtiva, setAbaAtiva] = useState("form");
 
-  // Formulário
   const [novoNome, setNovoNome] = useState("");
   const [novoSobrenome, setNovoSobrenome] = useState("");
   const [cidade, setCidade] = useState("");
@@ -59,7 +50,12 @@ function Candidatos() {
   const [endereco, setEndereco] = useState("");
   const [genero, setGenero] = useState("");
   const [avaliacao, setAvaliacao] = useState("");
-  const [avaliacaoComportamental, setAvaliacaoComportamental] = useState("");
+  const [avaliacaoComportamental, setAvaliacaoComportamental] = useState({
+    fator1: 0,
+    fator2: 0,
+    fator3: 0,
+    fator4: 0
+  });
   const [foto, setFoto] = useState(null);
   const [previewFoto, setPreviewFoto] = useState(null);
   const [curriculo, setCurriculo] = useState(null);
@@ -77,32 +73,31 @@ function Candidatos() {
     setCurriculo(URL.createObjectURL(file));
   };
 
+  const handleAvaliacaoChange = (fator, value) => {
+    setAvaliacaoComportamental(prev => ({
+      ...prev,
+      [fator]: Number(value)
+    }));
+  };
+
+  const somaComportamental = Object.values(avaliacaoComportamental).reduce((a, b) => a + b, 0);
+
   const adicionarCandidato = () => {
     const id = Date.now();
     setCandidatos([...candidatos, {
-      id,
-      nome: novoNome,
-      sobrenome: novoSobrenome,
-      cidade,
-      nascimento,
-      status: novoStatus,
-      vaga: novaVaga,
-      formacao,
-      telefoneDDD,
-      telefoneNumero,
-      endereco,
-      genero,
-      avaliacaoComportamental,
-      avaliacao,
-      foto,
-      curriculo
+      id, nome: novoNome, sobrenome: novoSobrenome, cidade,
+      nascimento, status: novoStatus, vaga: novaVaga, formacao,
+      telefoneDDD, telefoneNumero, endereco, genero,
+      avaliacao, avaliacaoComportamental,
+      somaComportamental,
+      foto, curriculo
     }]);
 
     // Resetar formulário
     setNovoNome(""); setNovoSobrenome(""); setCidade(""); setNascimento("");
     setNovoStatus("Aguardando"); setNovaVaga(""); setFormacao("");
     setTelefoneDDD(""); setTelefoneNumero(""); setEndereco(""); setGenero("");
-    setAvaliacao(""); setAvaliacaoComportamental("");
+    setAvaliacao(""); setAvaliacaoComportamental({ fator1:0, fator2:0, fator3:0, fator4:0 });
     setFoto(null); setPreviewFoto(null); setCurriculo(null);
   };
 
@@ -143,7 +138,24 @@ function Candidatos() {
             {generoOptions.map((g) => <option key={g} value={g}>{g}</option>)}
           </select>
 
-          <Editor label="Avaliação Comportamental" value={avaliacaoComportamental} setValue={setAvaliacaoComportamental} />
+          <div style={{ gridColumn: "1 / span 2" }}>
+            <h4>Avaliação Comportamental (1 a 4)</h4>
+            {["fator1","fator2","fator3","fator4"].map((fator) => (
+              <div key={fator} style={{ marginBottom: 5 }}>
+                <label>{fator.toUpperCase()}: </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="4"
+                  value={avaliacaoComportamental[fator]}
+                  onChange={(e) => handleAvaliacaoChange(fator, e.target.value)}
+                  style={{ width: 50 }}
+                />
+              </div>
+            ))}
+            <p><strong>Soma:</strong> {somaComportamental}</p>
+          </div>
+
           <Editor label="Descrição da Entrevista" value={avaliacao} setValue={setAvaliacao} />
 
           <div style={{ marginTop: 20 }}>
@@ -166,13 +178,24 @@ function Candidatos() {
               <p style={{ textAlign: "center" }}>{candidato.cidade}</p>
               <p style={{ textAlign: "center" }}>Gênero: {candidato.genero}</p>
               <p style={{ textAlign: "center" }}>Status: {candidato.status}</p>
-              <div dangerouslySetInnerHTML={{ __html: candidato.avaliacaoComportamental }} style={{ marginBottom: 10 }} />
-              <div dangerouslySetInnerHTML={{ __html: candidato.avaliacao }} style={{ marginBottom: 10 }} />
-              {candidato.foto && <img src={candidato.foto ? URL.createObjectURL(candidato.foto) : ""} alt="Foto" style={{ maxWidth: 150, borderRadius: 8, display: "block", margin: "10px auto" }} />}
-              {candidato.curriculo && (
-                <iframe src={candidato.curriculo} width="100%" height="300" title="Currículo"></iframe>
-              )}
-              <button onClick={() => excluirCandidato(candidato.id)} style={{ display: "block", margin: "10px auto" }}>Excluir</button>
+
+              <div style={{ marginBottom: 10 }}>
+                <h5>Avaliação Comportamental</h5>
+                {["fator1","fator2","fator3","fator4"].map((f) => (
+                  <p key={f}>{f.toUpperCase()}: {candidato.avaliacaoComportamental[f]}</p>
+                ))}
+                <p><strong>Soma:</strong> {candidato.somaComportamental}</p>
+              </div>
+
+              <div>
+                <h5>Descrição da Entrevista</h5>
+                <div dangerouslySetInnerHTML={{ __html: candidato.avaliacao }} style={{ background: "#f9f9f9", padding: 10, borderRadius: 6 }} />
+              </div>
+
+              {candidato.foto && <img src={URL.createObjectURL(candidato.foto)} alt="Foto" style={{ maxWidth: 100, borderRadius: 8, marginTop: 5 }} />}
+              {candidato.curriculo && <a href={candidato.curriculo} target="_blank" rel="noreferrer">Abrir Currículo</a>}
+
+              <button onClick={() => excluirCandidato(candidato.id)} style={{ marginTop: 10 }}>Excluir</button>
             </div>
           ))}
         </div>
