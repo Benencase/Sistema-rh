@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf"; // versão legacy funciona melhor com Vite
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+
+// Configura o worker do PDF via CDN
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const fatores = [
@@ -190,49 +192,36 @@ function Candidatos() {
           <input placeholder="Vaga Desejada" value={novaVaga} onChange={(e) => setNovaVaga(e.target.value)} />
           <input placeholder="Formação Acadêmica" value={formacao} onChange={(e) => setFormacao(e.target.value)} />
           <div style={{ display: "flex", gap: "8px" }}>
-            <input placeholder="DDD" value={telefoneDDD} onChange={(e) => setTelefoneDDD(e.target.value.replace(/\D/g, ""))} style={{ width: "60px" }} />
-            <input placeholder="Número" value={telefoneNumero} onChange={(e) => setTelefoneNumero(e.target.value.replace(/\D/g, ""))} />
+            <input placeholder="DDD" value={telefoneDDD} onChange={(e) => setTelefoneDDD(e.target.value)} style={{ width: 50 }} />
+            <input placeholder="Número" value={telefoneNumero} onChange={(e) => setTelefoneNumero(e.target.value)} />
           </div>
           <input placeholder="Endereço" value={endereco} onChange={(e) => setEndereco(e.target.value)} />
-          <select value={genero} onChange={(e) => setGenero(e.target.value)}>
-            <option value="">Selecione o gênero</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
+          <input placeholder="Gênero" value={genero} onChange={(e) => setGenero(e.target.value)} />
+          <ReactQuill theme="snow" value={sobre} onChange={setSobre} style={{ gridColumn: "1 / span 2" }} />
           <input type="file" accept="image/*" onChange={handleFotoChange} />
-          {previewFoto && <img src={previewFoto} alt="preview" style={{ maxWidth: 150, marginTop: 8 }} />}
+          {previewFoto && <img src={previewFoto} alt="Preview" style={{ maxWidth: 150, borderRadius: 8 }} />}
+          <input type="file" accept="application/pdf" onChange={(e) => extrairDadosPDF(e.target.files[0])} />
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
-          <div style={{ gridColumn: "1 / 3" }}>
-            <label>Sobre o candidato:</label>
-            <ReactQuill value={sobre} onChange={setSobre} />
-          </div>
-          <button onClick={adicionarCandidato} style={{ gridColumn: "1 / 3", padding: 10, background: "#333", color: "#fff" }}>Adicionar</button>
+          <button onClick={adicionarCandidato} style={{ gridColumn: "1 / span 2", marginTop: 10 }}>Adicionar Candidato</button>
         </div>
       )}
 
       {abaAtiva === "curriculo" && (
-        <div>
-          <h3>Enviar Currículo PDF</h3>
-          <input type="file" accept="application/pdf" onChange={(e) => e.target.files[0] && extrairDadosPDF(e.target.files[0])} />
-          {curriculoFile && (
-            <a href={URL.createObjectURL(curriculoFile)} download="curriculo.pdf" style={{ display: "block", marginTop: 10 }}>
-              📥 Baixar Currículo
-            </a>
-          )}
+        <div style={{ marginTop: 20 }}>
+          {candidatos.length === 0 && <p>Nenhum candidato cadastrado.</p>}
+          {candidatos.map((candidato) => (
+            <div key={candidato.id} style={{ border: "1px solid #ddd", padding: 10, marginBottom: 10, borderRadius: 8 }}>
+              <h4>{candidato.nome} {candidato.sobrenome}</h4>
+              <p>{candidato.cidade}</p>
+              <p>Status: {candidato.status}</p>
+              {candidato.curriculo && (
+                <iframe src={candidato.curriculo} width="100%" height="300" title="Currículo"></iframe>
+              )}
+              <button onClick={() => excluirCandidato(candidato.id)}>Excluir</button>
+            </div>
+          ))}
         </div>
       )}
-
-      <h3 style={{ marginTop: 20, textAlign: "center" }}>Lista de Candidatos</h3>
-      <ul>
-        {candidatos.map((c) => (
-          <li key={c.id} style={{ marginBottom: 10 }}>
-            <strong style={{ textTransform: "uppercase" }}>{c.nome} {c.sobrenome}</strong> - {c.vaga} - {c.cidade} - Status: {c.status}
-            {c.curriculo && <a href={c.curriculo} download="curriculo.pdf" style={{ marginLeft: 10 }}>📥</a>}
-            <button style={{ marginLeft: 10 }} onClick={() => excluirCandidato(c.id)}>Excluir</button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
