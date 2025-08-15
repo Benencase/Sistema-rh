@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-// Toolbar do editor de descrição
+// Lista de algumas cidades do Brasil (exemplo, pode adicionar mais)
+const cidadesBrasil = [
+  "São Paulo", "Rio de Janeiro", "Belo Horizonte", "Salvador", "Fortaleza",
+  "Brasília", "Curitiba", "Recife", "Porto Alegre", "Manaus"
+];
+
+// Toolbar do editor de descrição com paleta de cores
 const toolbarOptions = [
   [{ 'header': [1, 2, 3, false] }],
   ['bold', 'italic', 'underline', 'strike'],
-  [{ 'color': [] }, { 'background': [] }],
-  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'color': ['#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff', '#ffffff'] }],
+  [{ 'background': ['#ffffff', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff'] }],
+  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
   [{ 'align': [] }],
   ['clean']
 ];
@@ -82,7 +89,6 @@ function Candidatos() {
   };
 
   const extrairDadosPDF = (file) => {
-    // Placeholder para extrair dados do PDF
     setCurriculo(URL.createObjectURL(file));
   };
 
@@ -119,7 +125,13 @@ function Candidatos() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, background: "#fafafa", padding: 20, borderRadius: 10 }}>
           <input placeholder="Nome" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
           <input placeholder="Sobrenome" value={novoSobrenome} onChange={(e) => setNovoSobrenome(e.target.value)} />
-          <input placeholder="Cidade" value={novaCidade} onChange={(e) => setNovaCidade(e.target.value)} />
+          
+          {/* Select de cidades do Brasil */}
+          <select value={novaCidade} onChange={(e) => setNovaCidade(e.target.value)}>
+            <option value="">Selecione a cidade</option>
+            {cidadesBrasil.map((cidade) => <option key={cidade} value={cidade}>{cidade}</option>)}
+          </select>
+
           <input type="date" value={nascimento} onChange={(e) => setNascimento(e.target.value)} />
           <select value={novoStatus} onChange={(e) => setNovoStatus(e.target.value)}>
             {statusOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
