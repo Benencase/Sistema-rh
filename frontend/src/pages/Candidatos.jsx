@@ -2,32 +2,25 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-// Lista de algumas cidades do Brasil (exemplo, pode adicionar mais)
-const cidadesBrasil = [
-  "São Paulo", "Rio de Janeiro", "Belo Horizonte", "Salvador", "Fortaleza",
-  "Brasília", "Curitiba", "Recife", "Porto Alegre", "Manaus"
-];
-
-// Toolbar do editor de descrição com paleta de cores
+// Toolbar do editor de avaliação
 const toolbarOptions = [
   [{ 'header': [1, 2, 3, false] }],
   ['bold', 'italic', 'underline', 'strike'],
-  [{ 'color': ['#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff', '#ffffff'] }],
-  [{ 'background': ['#ffffff', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff'] }],
-  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+  [{ 'color': [] }, { 'background': [] }],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
   [{ 'align': [] }],
   ['clean']
 ];
 
-// Componente para o editor de descrição
-function CandidatoDescricao({ sobre, setSobre }) {
+// Componente para avaliação da entrevista
+function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   return (
-    <div style={{ marginBottom: 20, gridColumn: "1 / span 2" }}>
-      <h4>Descrição do Candidato</h4>
+    <div style={{ gridColumn: "1 / span 2" }}>
+      <h4 style={{ textAlign: "center", textTransform: "uppercase" }}>Avaliação da Entrevista</h4>
       <ReactQuill
         theme="snow"
-        value={sobre}
-        onChange={setSobre}
+        value={avaliacao}
+        onChange={setAvaliacao}
         modules={{ toolbar: toolbarOptions }}
         style={{
           height: 150,
@@ -41,22 +34,6 @@ function CandidatoDescricao({ sobre, setSobre }) {
   );
 }
 
-// Componente para avaliação da entrevista
-function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
-  return (
-    <div style={{ gridColumn: "1 / span 2" }}>
-      <h4>Avaliação da Entrevista</h4>
-      <textarea
-        placeholder="Digite sua avaliação..."
-        value={avaliacao}
-        onChange={(e) => setAvaliacao(e.target.value)}
-        style={{ width: "100%", height: 80, borderRadius: 6, border: "1px solid #ccc", padding: 8 }}
-      />
-    </div>
-  );
-}
-
-// Componente principal
 function Candidatos() {
   const [candidatos, setCandidatos] = useState([]);
   const [abaAtiva, setAbaAtiva] = useState("form");
@@ -73,7 +50,6 @@ function Candidatos() {
   const [telefoneNumero, setTelefoneNumero] = useState("");
   const [endereco, setEndereco] = useState("");
   const [genero, setGenero] = useState("");
-  const [sobre, setSobre] = useState("");
   const [avaliacao, setAvaliacao] = useState("");
   const [foto, setFoto] = useState(null);
   const [previewFoto, setPreviewFoto] = useState(null);
@@ -81,6 +57,13 @@ function Candidatos() {
 
   const statusOptions = ["Aguardando", "Aprovado", "Reprovado"];
   const generoOptions = ["Masculino", "Feminino", "Outro"];
+  const cidades = [
+    "Rio Branco", "Maceió", "Macapá", "Manaus", "Salvador", "Fortaleza",
+    "Brasília", "Vitória", "Goiânia", "São Luís", "Cuiabá", "Campo Grande",
+    "Belo Horizonte", "Belém", "João Pessoa", "Curitiba", "Recife", "Teresina",
+    "Rio de Janeiro", "Natal", "Porto Alegre", "Porto Velho", "Boa Vista",
+    "Florianópolis", "São Paulo", "Aracaju", "Palmas"
+  ];
 
   const handleFotoChange = (e) => {
     const file = e.target.files[0];
@@ -97,14 +80,15 @@ function Candidatos() {
     setCandidatos([...candidatos, {
       id, nome: novoNome, sobrenome: novoSobrenome, cidade: novaCidade,
       nascimento, status: novoStatus, vaga: novaVaga, formacao,
-      telefoneDDD, telefoneNumero, endereco, genero, sobre, avaliacao,
+      telefoneDDD, telefoneNumero, endereco, genero, avaliacao,
       foto, curriculo
     }]);
+
     // Resetar formulário
     setNovoNome(""); setNovoSobrenome(""); setNovaCidade(""); setNascimento("");
     setNovoStatus("Aguardando"); setNovaVaga(""); setFormacao("");
     setTelefoneDDD(""); setTelefoneNumero(""); setEndereco("");
-    setGenero(""); setSobre(""); setAvaliacao(""); setFoto(null);
+    setGenero(""); setAvaliacao(""); setFoto(null);
     setPreviewFoto(null); setCurriculo(null);
   };
 
@@ -125,13 +109,12 @@ function Candidatos() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, background: "#fafafa", padding: 20, borderRadius: 10 }}>
           <input placeholder="Nome" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
           <input placeholder="Sobrenome" value={novoSobrenome} onChange={(e) => setNovoSobrenome(e.target.value)} />
-          
-          {/* Select de cidades do Brasil */}
           <select value={novaCidade} onChange={(e) => setNovaCidade(e.target.value)}>
             <option value="">Selecione a cidade</option>
-            {cidadesBrasil.map((cidade) => <option key={cidade} value={cidade}>{cidade}</option>)}
+            {cidades.map((cidade, index) => (
+              <option key={index} value={cidade}>{cidade}</option>
+            ))}
           </select>
-
           <input type="date" value={nascimento} onChange={(e) => setNascimento(e.target.value)} />
           <select value={novoStatus} onChange={(e) => setNovoStatus(e.target.value)}>
             {statusOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
@@ -148,13 +131,11 @@ function Candidatos() {
             {generoOptions.map((g) => <option key={g} value={g}>{g}</option>)}
           </select>
 
-          <CandidatoDescricao sobre={sobre} setSobre={setSobre} />
+          <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
 
           <input type="file" accept="image/*" onChange={handleFotoChange} />
           {previewFoto && <img src={previewFoto} alt="Preview" style={{ maxWidth: 150, borderRadius: 8 }} />}
           <input type="file" accept="application/pdf" onChange={(e) => extrairDadosPDF(e.target.files[0])} />
-
-          <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
 
           <button onClick={adicionarCandidato} style={{ gridColumn: "1 / span 2", marginTop: 10 }}>Adicionar Candidato</button>
         </div>
@@ -165,15 +146,14 @@ function Candidatos() {
           {candidatos.length === 0 && <p>Nenhum candidato cadastrado.</p>}
           {candidatos.map((candidato) => (
             <div key={candidato.id} style={{ border: "1px solid #ddd", padding: 10, marginBottom: 10, borderRadius: 8 }}>
-              <h4>{candidato.nome} {candidato.sobrenome}</h4>
-              <p>{candidato.cidade}</p>
-              <p>Gênero: {candidato.genero}</p>
-              <p>Status: {candidato.status}</p>
-              <div dangerouslySetInnerHTML={{ __html: candidato.sobre }} style={{ marginBottom: 10 }} />
-              {candidato.curriculo && (
-                <iframe src={candidato.curriculo} width="100%" height="300" title="Currículo"></iframe>
-              )}
-              <button onClick={() => excluirCandidato(candidato.id)}>Excluir</button>
+              <h4 style={{ textAlign: "center", textTransform: "uppercase" }}>{candidato.nome} {candidato.sobrenome}</h4>
+              <p style={{ textAlign: "center" }}>{candidato.cidade}</p>
+              <p style={{ textAlign: "center" }}>Gênero: {candidato.genero}</p>
+              <p style={{ textAlign: "center" }}>Status: {candidato.status}</p>
+              <div dangerouslySetInnerHTML={{ __html: candidato.avaliacao }} style={{ marginBottom: 10 }} />
+              {candidato.foto && <img src={URL.createObjectURL(candidato.foto)} alt="Foto" style={{ maxWidth: 150, borderRadius: 8, display: "block", margin: "10px auto" }} />}
+              {candidato.curriculo && <iframe src={candidato.curriculo} width="100%" height="300" title="Currículo"></iframe>}
+              <button onClick={() => excluirCandidato(candidato.id)} style={{ marginTop: 5 }}>Excluir</button>
             </div>
           ))}
         </div>
