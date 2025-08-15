@@ -4,11 +4,11 @@ import "react-quill/dist/quill.snow.css";
 
 // Toolbar do editor
 const toolbarOptions = [
-  [{ header: [1, 2, 3, false] }],
+  [{ 'header': [1, 2, 3, false] }],
   ['bold', 'italic', 'underline', 'strike'],
-  [{ color: [] }, { background: [] }],
-  [{ list: 'ordered'}, { list: 'bullet' }],
-  [{ align: [] }],
+  [{ 'color': [] }, { 'background': [] }],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'align': [] }],
   ['clean']
 ];
 
@@ -21,7 +21,7 @@ const capitaisBrasil = [
   "Palmas"
 ];
 
-// Componente do Editor
+// Componente Editor
 function Editor({ label, value, setValue }) {
   return (
     <div style={{ gridColumn: "1 / span 2", marginBottom: 20 }}>
@@ -73,7 +73,7 @@ function Candidatos() {
     setPreviewFoto(URL.createObjectURL(file));
   };
 
-  const handleCurriculoChange = (file) => {
+  const extrairDadosPDF = (file) => {
     setCurriculo(URL.createObjectURL(file));
   };
 
@@ -92,8 +92,8 @@ function Candidatos() {
       telefoneNumero,
       endereco,
       genero,
-      avaliacao,
       avaliacaoComportamental,
+      avaliacao,
       foto,
       curriculo
     }]);
@@ -102,7 +102,8 @@ function Candidatos() {
     setNovoNome(""); setNovoSobrenome(""); setCidade(""); setNascimento("");
     setNovoStatus("Aguardando"); setNovaVaga(""); setFormacao("");
     setTelefoneDDD(""); setTelefoneNumero(""); setEndereco(""); setGenero("");
-    setAvaliacao(""); setAvaliacaoComportamental(""); setFoto(null); setPreviewFoto(null); setCurriculo(null);
+    setAvaliacao(""); setAvaliacaoComportamental("");
+    setFoto(null); setPreviewFoto(null); setCurriculo(null);
   };
 
   const excluirCandidato = (id) => {
@@ -150,7 +151,7 @@ function Candidatos() {
             {previewFoto && <img src={previewFoto} alt="Preview" style={{ maxWidth: 150, borderRadius: 8, marginTop: 10 }} />}
           </div>
 
-          <input type="file" accept="application/pdf" onChange={(e) => handleCurriculoChange(e.target.files[0])} />
+          <input type="file" accept="application/pdf" onChange={(e) => extrairDadosPDF(e.target.files[0])} />
 
           <button onClick={adicionarCandidato} style={{ gridColumn: "1 / span 2", marginTop: 10 }}>Adicionar Candidato</button>
         </div>
