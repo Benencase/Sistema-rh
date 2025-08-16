@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+// Importa o novo CSS com os estilos das fontes
+import './editor-fonts.css';
+
 // **********************************************
 // * NOVO CÓDIGO - IMPORTANTE QUE FIQUE AQUI!
 // **********************************************
 const Font = Quill.import('formats/font');
-Font.whitelist = ['Arial', 'Georgia', 'Times New Roman', 'Verdana'];
+Font.whitelist = ['Arial', 'Georgia', 'Times', 'Verdana']; // Use 'Times' para 'Times New Roman'
 Quill.register(Font, true);
 // **********************************************
 
