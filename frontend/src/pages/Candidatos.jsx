@@ -3,12 +3,12 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // **********************************************
-// * NOVO CÓDIGO A SER ADICIONADO *
+// * NOVO CÓDIGO - IMPORTANTE QUE FIQUE AQUI!
 // **********************************************
 const Font = Quill.import('formats/font');
-// Adicione as fontes que deseja na lista
 Font.whitelist = ['Arial', 'Georgia', 'Times New Roman', 'Verdana'];
 Quill.register(Font, true);
+// **********************************************
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const fatores = [
