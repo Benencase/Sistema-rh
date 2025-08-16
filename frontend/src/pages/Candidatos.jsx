@@ -190,11 +190,6 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                   <p>
                     <strong>Média:</strong> {media}
                   </p>
-                  {c.avaliacao.observacoes && (
-                    <p>
-                      <strong>Observações:</strong> {c.avaliacao.observacoes}
-                    </p>
-                  )}
                 </div>
               )}
               <br />
@@ -224,7 +219,7 @@ function Candidatos() {
   const [sobrenome, setSobrenome] = useState("");
   const [novaCidade, setNovaCidade] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
-  const [novoSobre, setNovoSobre] = useState("");
+  const [observacoesEntrevista, setObservacoesEntrevista] = useState("");
   const [novaVaga, setNovaVaga] = useState("");
   const [novoStatus, setNovoStatus] = useState("Não selecionado");
   const [previewFoto, setPreviewFoto] = useState(null);
@@ -299,7 +294,7 @@ function Candidatos() {
     setSobrenome("");
     setNovaCidade("");
     setDataNascimento("");
-    setNovoSobre("");
+    setObservacoesEntrevista("");
     setNovaVaga("");
     setNovoStatus("Não selecionado");
     setPreviewFoto(null);
@@ -336,7 +331,7 @@ function Candidatos() {
                 cidade,
                 estado,
                 dataNascimento,
-                sobre: novoSobre,
+                observacoesEntrevista,
                 vaga: novaVaga,
                 status: novoStatus,
                 foto: previewFoto,
@@ -360,7 +355,7 @@ function Candidatos() {
         cidade,
         estado,
         dataNascimento,
-        sobre: novoSobre,
+        observacoesEntrevista,
         vaga: novaVaga,
         status: novoStatus,
         foto: previewFoto,
@@ -389,7 +384,7 @@ function Candidatos() {
         : ""
     );
     setDataNascimento(candidato.dataNascimento || "");
-    setNovoSobre(candidato.sobre || "");
+    setObservacoesEntrevista(candidato.observacoesEntrevista || "");
     setNovaVaga(candidato.vaga || "");
     setNovoStatus(candidato.status || "Não selecionado");
     setPreviewFoto(candidato.foto || null);
@@ -499,10 +494,10 @@ function Candidatos() {
           </div>
           <div>
             <label>
-              Sobre:
+              Observações da Entrevista:
               <textarea
-                value={novoSobre}
-                onChange={(e) => setNovoSobre(e.target.value)}
+                value={observacoesEntrevista}
+                onChange={(e) => setObservacoesEntrevista(e.target.value)}
               />
             </label>
           </div>
