@@ -2,16 +2,14 @@ import React, { useState, useEffect } from "react";
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-// Importa o novo CSS com os estilos das fontes
-import './editor-fonts.css';
+// Importa o arquivo CSS com as fontes personalizadas
+import './react-quill-fonts.css';
 
-// **********************************************
-// * NOVO CÓDIGO - IMPORTANTE QUE FIQUE AQUI!
-// **********************************************
+// Registra as fontes no editor Quill
 const Font = Quill.import('formats/font');
-Font.whitelist = ['Arial', 'Georgia', 'Times', 'Verdana']; // Use 'Times' para 'Times New Roman'
+// A lista de fontes é mapeada para os estilos no arquivo CSS
+Font.whitelist = ['Arial', 'Georgia', 'Times', 'Verdana'];
 Quill.register(Font, true);
-// **********************************************
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const fatores = [
@@ -690,7 +688,8 @@ function Candidatos() {
             </div>
           </div>
           
-          <div style={{ gridColumn: "1 / 3" }}>
+          {/* Adicionei a classe "editor-observacoes" aqui para o CSS */}
+          <div className="editor-observacoes" style={{ gridColumn: "1 / 3" }}>
             <label style={{ display: "block", marginBottom: "6px" }}>Observações da Entrevista:</label>
             <ReactQuill
               theme="snow"
