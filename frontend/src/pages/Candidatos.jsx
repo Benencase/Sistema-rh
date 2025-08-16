@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-// Importa o arquivo CSS com as fontes personalizadas
-import './react-quill-fonts.css';
-
-// Registra as fontes no editor Quill
+// Para usar apenas a fonte Arial, não precisamos de um arquivo CSS externo.
+// A fonte padrão do navegador (que pode ser Arial) será usada.
+// O código abaixo garante que apenas 'Arial' apareça no menu.
 const Font = Quill.import('formats/font');
-// A lista de fontes é mapeada para os estilos no arquivo CSS
-Font.whitelist = ['Arial', 'Georgia', 'Times', 'Verdana'];
+Font.whitelist = ['Arial'];
 Quill.register(Font, true);
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
@@ -465,17 +463,19 @@ function Candidatos() {
     URL.revokeObjectURL(url);
   };
 
-  const modules = {
-    toolbar: [
-      [{ 'font': Font.whitelist }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      [{ 'color': [] }],
-    ],
-  };
+  // CONFIGURAÇÃO DA PALETA DE CORES E TAMANHOS DO REACT-QUILL
+  const modules = {
+    toolbar: [
+      [{ 'font': ['Arial'] }],
+      [{ 'size': ['10px', '12px', '14px', '16px', '20px', '24px'] }], // Tamanhos customizados em pixels
+      [{ 'color': ['#000000', '#28a745', '#dc3545', '#007bff', '#6c757d', '#ffc107', '#ffffff'] }], // Paleta de cores simples
+      [{ 'background': ['#ffffff', '#f8f9fa', '#e9ecef', '#dee2e6', '#adb5bd', '#6c757d'] }], // Cores de fundo
+    ],
+  };
 
-  const formats = [
-    'font', 'size', 'color'
-  ];
+  const formats = [
+    'font', 'size', 'color', 'background'
+  ];
 
   return (
     <div
@@ -635,16 +635,6 @@ function Candidatos() {
           </div>
           <div>
             <label>
-              CEP:
-              <input
-                type="text"
-                value={cep}
-                onChange={(e) => setCep(e.target.value)}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
               Estado Civil:
               <input
                 type="text"
@@ -711,7 +701,7 @@ function Candidatos() {
                   />
                 </div>
               )}
-            </div>
+          </div>
           </div>
           
           <div className="editor-observacoes" style={{ gridColumn: "1 / 3" }}>
