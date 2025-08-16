@@ -591,19 +591,6 @@ function Candidatos() {
           </div>
           <div>
             <label>
-              Foto:
-              <input type="file" accept="image/*" onChange={handleFotoChange} />
-            </label>
-            {previewFoto && (
-              <img
-                src={previewFoto}
-                alt="Pré-visualização"
-                style={{ width: 100, marginTop: 10, borderRadius: 8 }}
-              />
-            )}
-          </div>
-          <div>
-            <label>
               Formação Acadêmica:
               <input
                 type="text"
@@ -676,6 +663,50 @@ function Candidatos() {
               style={{ height: "200px", marginBottom: "50px" }}
             />
           </div>
+          
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+              Foto do Candidato:
+            </label>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              flexWrap: 'wrap'
+            }}>
+              <label htmlFor="file-upload" style={{
+                cursor: 'pointer',
+                background: '#007bff',
+                color: '#fff',
+                padding: '10px 20px',
+                borderRadius: '5px',
+                transition: 'background-color 0.2s',
+                ':hover': {
+                  backgroundColor: '#0056b3'
+                }
+              }}>
+                Selecionar Foto
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFotoChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              {previewFoto && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <span style={{ fontSize: '14px', color: '#555', marginBottom: '5px' }}>Pré-visualização:</span>
+                  <img
+                    src={previewFoto}
+                    alt="Pré-visualização"
+                    style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid #ccc' }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+          
           {/* Avaliação Comportamental */}
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
           <div style={{ gridColumn: "1 / 3" }}>
