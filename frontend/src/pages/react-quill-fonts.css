@@ -1,16 +1,16 @@
-/* editor-fonts.css */
+/* react-quill-fonts.css */
 .editor-observacoes .ql-font-Arial {
-  font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif !important;
 }
 
 .editor-observacoes .ql-font-Georgia {
-  font-family: Georgia, serif;
+  font-family: Georgia, serif !important;
 }
 
 .editor-observacoes .ql-font-Times {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Times New Roman', Times, serif !important;
 }
 
 .editor-observacoes .ql-font-Verdana {
-  font-family: Verdana, sans-serif;
+  font-family: Verdana, sans-serif !important;
 }
