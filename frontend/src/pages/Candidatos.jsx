@@ -442,7 +442,7 @@ function Candidatos() {
 
   const modules = {
     toolbar: [
-      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+      [{ 'header': '1'}, {'header': '2'}, { 'font': ['Arial', 'serif', 'monospace', 'fantasy', 'sans-serif'] }],
       [{'size': ['small', false, 'large', 'huge']}],
       ['bold', 'italic', 'underline', 'strike', 'blockquote'],
       [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
