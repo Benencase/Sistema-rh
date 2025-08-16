@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Importa os estilos do Quill
+import 'react-quill/dist/quill.snow.css';
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const fatores = [
@@ -143,8 +143,19 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                 borderRadius: 8,
                 boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 backgroundColor: "#fff",
+                position: "relative", // Adicionado para posicionar a foto
               }}
             >
+              {c.foto && (
+                <div style={{ position: 'absolute', top: 20, right: 20 }}>
+                  <img
+                    src={c.foto}
+                    alt="Foto do candidato"
+                    style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%', border: '2px solid #007bff' }}
+                  />
+                </div>
+              )}
+
               <div
                 style={{
                   display: "flex",
@@ -653,7 +664,6 @@ function Candidatos() {
             </label>
           </div>
           
-          {/* Nova posição e estilo para o campo de foto */}
           <div style={{
             gridColumn: "1 / 3",
             display: "flex",
@@ -713,7 +723,6 @@ function Candidatos() {
             />
           </div>
           
-          {/* Avaliação Comportamental */}
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
           
           <div style={{ gridColumn: "1 / 3" }}>
