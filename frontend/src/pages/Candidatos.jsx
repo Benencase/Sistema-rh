@@ -14,17 +14,13 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
     "Serenidade Aparente",
     "Assertividade",
     "Organização",
-    "Auto Desenvolvimento"
+    "Auto Desenvolvimento",
   ];
 
   const handleNotaChange = (i, valor) => {
     const novasNotas = [...(avaliacao?.notas || Array(fatores.length).fill(""))];
     novasNotas[i] = valor;
     setAvaliacao({ ...avaliacao, notas: novasNotas });
-  };
-
-  const handleObservacoesChange = (valor) => {
-    setAvaliacao({ ...avaliacao, observacoes: valor });
   };
 
   const somaTotal = (avaliacao?.notas || [])
@@ -34,13 +30,25 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const media = fatores.length > 0 ? (somaTotal / fatores.length).toFixed(2) : "0.00";
 
   return (
-    <div style={{ marginTop: 20, gridColumn: "1 / 3", background: "#f0f0f0", padding: 15, borderRadius: 8 }}>
+    <div
+      style={{
+        marginTop: 20,
+        gridColumn: "1 / 3",
+        background: "#f0f0f0",
+        padding: 15,
+        borderRadius: 8,
+      }}
+    >
       <h3>Avaliação Comportamental</h3>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
-            <th style={{ borderBottom: "1px solid #ccc", textAlign: "left", padding: "8px" }}>Fatores</th>
-            <th style={{ borderBottom: "1px solid #ccc", padding: "8px", width: 120 }}>Nota (1 a 5)</th>
+            <th style={{ borderBottom: "1px solid #ccc", textAlign: "left", padding: "8px" }}>
+              Fatores
+            </th>
+            <th style={{ borderBottom: "1px solid #ccc", padding: "8px", width: 120 }}>
+              Nota (1 a 5)
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -70,25 +78,25 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
         <strong>Soma Total:</strong> {somaTotal} <br />
         <strong>Média:</strong> {media}
       </div>
-
-      <div style={{ marginTop: 16 }}>
-        <label style={{ display: "block", marginBottom: 6 }}>Observações gerais:</label>
-        <textarea
-          rows={4}
-          value={avaliacao?.observacoes || ""}
-          onChange={(e) => handleObservacoesChange(e.target.value)}
-          style={{ width: "100%" }}
-        />
-      </div>
     </div>
   );
 }
 
 function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
   const fatores = [
-    "Postura","Comunicação","Habilidade Profissional","Comprometimento","Capacidade de Adaptação",
-    "Iniciativa / Liderança","Comportamento Ético","Maturidade Emocional","Motivação para o Trabalho",
-    "Serenidade Aparente","Assertividade","Organização","Auto Desenvolvimento"
+    "Postura",
+    "Comunicação",
+    "Habilidade Profissional",
+    "Comprometimento",
+    "Capacidade de Adaptação",
+    "Iniciativa / Liderança",
+    "Comportamento Ético",
+    "Maturidade Emocional",
+    "Motivação para o Trabalho",
+    "Serenidade Aparente",
+    "Assertividade",
+    "Organização",
+    "Auto Desenvolvimento",
   ];
 
   const handleExcluir = (id) => {
@@ -117,23 +125,34 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
       {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
       <ul>
         {candidatos.map((c) => {
-          const somaTotal = c.avaliacao?.notas?.reduce((a, b) => a + (parseInt(b) || 0), 0) || 0;
-          const media = c.avaliacao?.notas?.length ? (somaTotal / c.avaliacao.notas.length).toFixed(2) : "0.00";
+          const somaTotal =
+            c.avaliacao?.notas?.reduce((a, b) => a + (parseInt(b) || 0), 0) || 0;
+          const media = c.avaliacao?.notas?.length
+            ? (somaTotal / c.avaliacao.notas.length).toFixed(2)
+            : "0.00";
 
           return (
-            <li key={c.id} style={{ marginBottom: 20, borderBottom: "1px solid #ccc", paddingBottom: 10 }}>
-              <strong>{c.nome} {c.sobrenome}</strong> - {c.vaga} - Status: {c.status}
-              <br />Cidade: {c.estado} - {c.cidade}
+            <li
+              key={c.id}
+              style={{ marginBottom: 20, borderBottom: "1px solid #ccc", paddingBottom: 10 }}
+            >
+              <strong>
+                {c.nome} {c.sobrenome}
+              </strong>{" "}
+              - {c.vaga} - Status: {c.status}
               <br />
-
+              Cidade: {c.estado} - {c.cidade}
+              <br />
               {c.curriculo ? (
                 <p>
-                  Currículo enviado: <a href={c.curriculo} target="_blank" rel="noopener noreferrer">{c.nomeArquivoCurriculo || "Arquivo"}</a>
+                  Currículo enviado:{" "}
+                  <a href={c.curriculo} target="_blank" rel="noopener noreferrer">
+                    {c.nomeArquivoCurriculo || "Arquivo"}
+                  </a>
                 </p>
               ) : (
                 <p>Sem currículo enviado.</p>
               )}
-
               <label>
                 Enviar currículo (PDF/DOC):
                 <input
@@ -142,11 +161,14 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                   onChange={(e) => handleEnvioCurriculo(c.id, e)}
                 />
               </label>
-
               {c.avaliacao && (
                 <div style={{ marginTop: 15 }}>
                   <strong>Avaliação Comportamental:</strong>
-                  <table border="1" cellPadding="5" style={{ marginTop: 5, borderCollapse: "collapse" }}>
+                  <table
+                    border="1"
+                    cellPadding="5"
+                    style={{ marginTop: 5, borderCollapse: "collapse" }}
+                  >
                     <thead>
                       <tr>
                         <th>Fator</th>
@@ -162,15 +184,25 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                       ))}
                     </tbody>
                   </table>
-                  <p><strong>Soma Total:</strong> {somaTotal}</p>
-                  <p><strong>Média:</strong> {media}</p>
-                  <p><strong>Observações:</strong> {c.avaliacao.observacoes || "Nenhuma"}</p>
+                  <p>
+                    <strong>Soma Total:</strong> {somaTotal}
+                  </p>
+                  <p>
+                    <strong>Média:</strong> {media}
+                  </p>
+                  {c.avaliacao.observacoes && (
+                    <p>
+                      <strong>Observações:</strong> {c.avaliacao.observacoes}
+                    </p>
+                  )}
                 </div>
               )}
-
               <br />
               <button onClick={() => editarCandidato(c)}>Editar</button>
-              <button onClick={() => handleExcluir(c.id)} style={{ marginLeft: 10, color: "red" }}>
+              <button
+                onClick={() => handleExcluir(c.id)}
+                style={{ marginLeft: 10, color: "red" }}
+              >
                 Excluir
               </button>
             </li>
@@ -198,9 +230,7 @@ function Candidatos() {
   const [previewFoto, setPreviewFoto] = useState(null);
   const [novaFoto, setNovaFoto] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
-  const [observacoes, setObservacoes] = useState("");
   const [formacaoAcademica, setFormacaoAcademica] = useState("");
-  const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [endereco, setEndereco] = useState("");
   const [cep, setCep] = useState("");
@@ -217,11 +247,33 @@ function Candidatos() {
   ];
 
   const cidadesDoBrasil = [
-    "AC - Rio Branco","AL - Maceió","AP - Macapá","AM - Manaus","BA - Salvador","CE - Fortaleza",
-    "DF - Brasília","ES - Vitória","GO - Goiânia","MA - São Luís","MT - Cuiabá","MS - Campo Grande",
-    "MG - Belo Horizonte","PA - Belém","PB - João Pessoa","PR - Curitiba","PE - Recife","PI - Teresina",
-    "RJ - Rio de Janeiro","RN - Natal","RS - Porto Alegre","RO - Porto Velho","RR - Boa Vista","SC - Florianópolis",
-    "SP - São Paulo","SE - Aracaju","TO - Palmas"
+    "AC - Rio Branco",
+    "AL - Maceió",
+    "AP - Macapá",
+    "AM - Manaus",
+    "BA - Salvador",
+    "CE - Fortaleza",
+    "DF - Brasília",
+    "ES - Vitória",
+    "GO - Goiânia",
+    "MA - São Luís",
+    "MT - Cuiabá",
+    "MS - Campo Grande",
+    "MG - Belo Horizonte",
+    "PA - Belém",
+    "PB - João Pessoa",
+    "PR - Curitiba",
+    "PE - Recife",
+    "PI - Teresina",
+    "RJ - Rio de Janeiro",
+    "RN - Natal",
+    "RS - Porto Alegre",
+    "RO - Porto Velho",
+    "RR - Boa Vista",
+    "SC - Florianópolis",
+    "SP - São Paulo",
+    "SE - Aracaju",
+    "TO - Palmas",
   ];
 
   useEffect(() => {
@@ -253,9 +305,7 @@ function Candidatos() {
     setPreviewFoto(null);
     setNovaFoto(null);
     setEditandoId(null);
-    setObservacoes("");
     setFormacaoAcademica("");
-    setEmail("");
     setTelefone("");
     setEndereco("");
     setCep("");
@@ -273,6 +323,8 @@ function Candidatos() {
       return;
     }
 
+    const [estado, cidade] = novaCidade.split(" - ");
+
     if (editandoId !== null) {
       setCandidatos((old) =>
         old.map((c) =>
@@ -281,15 +333,14 @@ function Candidatos() {
                 ...c,
                 nome: novoNome,
                 sobrenome,
-                cidade: novaCidade,
+                cidade,
+                estado,
                 dataNascimento,
                 sobre: novoSobre,
                 vaga: novaVaga,
                 status: novoStatus,
                 foto: previewFoto,
-                observacoes,
                 formacaoAcademica,
-                email,
                 telefone,
                 endereco,
                 cep,
@@ -306,15 +357,14 @@ function Candidatos() {
         id: Date.now(),
         nome: novoNome,
         sobrenome,
-        cidade: novaCidade,
+        cidade,
+        estado,
         dataNascimento,
         sobre: novoSobre,
         vaga: novaVaga,
         status: novoStatus,
         foto: previewFoto,
-        observacoes,
         formacaoAcademica,
-        email,
         telefone,
         endereco,
         cep,
@@ -333,7 +383,11 @@ function Candidatos() {
   const editarCandidato = (candidato) => {
     setNovoNome(candidato.nome || "");
     setSobrenome(candidato.sobrenome || "");
-    setNovaCidade(candidato.cidade || "");
+    setNovaCidade(
+      candidato.estado && candidato.cidade
+        ? `${candidato.estado} - ${candidato.cidade}`
+        : ""
+    );
     setDataNascimento(candidato.dataNascimento || "");
     setNovoSobre(candidato.sobre || "");
     setNovaVaga(candidato.vaga || "");
@@ -341,9 +395,7 @@ function Candidatos() {
     setPreviewFoto(candidato.foto || null);
     setNovaFoto(null);
     setEditandoId(candidato.id);
-    setObservacoes(candidato.observacoes || "");
     setFormacaoAcademica(candidato.formacaoAcademica || "");
-    setEmail(candidato.email || "");
     setTelefone(candidato.telefone || "");
     setEndereco(candidato.endereco || "");
     setCep(candidato.cep || "");
@@ -355,7 +407,14 @@ function Candidatos() {
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: "auto", padding: 20, fontFamily: "Arial, sans-serif" }}>
+    <div
+      style={{
+        maxWidth: 900,
+        margin: "auto",
+        padding: 20,
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
       <h1>Gestão de Candidatos</h1>
       <div style={{ marginBottom: 20 }}>
         <button
@@ -386,9 +445,11 @@ function Candidatos() {
           Currículos
         </button>
       </div>
-
       {abaAtiva === "form" && (
-        <form onSubmit={salvarCandidato} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <form
+          onSubmit={salvarCandidato}
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}
+        >
           <div>
             <label>
               Nome: *
@@ -436,7 +497,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               Sobre:
@@ -446,7 +506,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               Vaga:
@@ -457,7 +516,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               Status:
@@ -473,7 +531,6 @@ function Candidatos() {
               </select>
             </label>
           </div>
-
           <div>
             <label>
               Foto:
@@ -487,17 +544,6 @@ function Candidatos() {
               />
             )}
           </div>
-
-          <div>
-            <label>
-              Observações:
-              <textarea
-                value={observacoes}
-                onChange={(e) => setObservacoes(e.target.value)}
-              />
-            </label>
-          </div>
-
           <div>
             <label>
               Formação Acadêmica:
@@ -508,18 +554,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
-          <div>
-            <label>
-              Email:
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </label>
-          </div>
-
           <div>
             <label>
               Telefone:
@@ -530,7 +564,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               Endereço:
@@ -541,7 +574,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               CEP:
@@ -552,7 +584,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               Estado Civil:
@@ -563,7 +594,6 @@ function Candidatos() {
               />
             </label>
           </div>
-
           <div>
             <label>
               Gênero:
@@ -577,7 +607,6 @@ function Candidatos() {
               </select>
             </label>
           </div>
-
           <div>
             <label>
               Experiência:
@@ -587,10 +616,8 @@ function Candidatos() {
               />
             </label>
           </div>
-
           {/* Avaliação Comportamental */}
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
-
           <div style={{ gridColumn: "1 / 3" }}>
             <button type="submit" style={{ padding: "10px 20px", marginTop: 10 }}>
               {editandoId !== null ? "Atualizar Candidato" : "Cadastrar Candidato"}
@@ -607,7 +634,6 @@ function Candidatos() {
           </div>
         </form>
       )}
-
       {abaAtiva === "curriculo" && (
         <Curriculo
           candidatos={candidatos}
