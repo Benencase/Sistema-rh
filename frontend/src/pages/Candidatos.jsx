@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Importa os estilos do Quill
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const fatores = [
@@ -287,7 +289,6 @@ function Candidatos() {
   const [cep, setCep] = useState("");
   const [estadoCivil, setEstadoCivil] = useState("");
   const [genero, setGenero] = useState("M");
-  const [experiencia, setExperiencia] = useState("");
   const [avaliacao, setAvaliacao] = useState(null);
 
   const statusOptions = [
@@ -362,7 +363,6 @@ function Candidatos() {
     setCep("");
     setEstadoCivil("");
     setGenero("M");
-    setExperiencia("");
     setAvaliacao(null);
   };
 
@@ -397,7 +397,6 @@ function Candidatos() {
                 cep,
                 estadoCivil,
                 genero,
-                experiencia,
                 avaliacao,
               }
             : c
@@ -421,7 +420,6 @@ function Candidatos() {
         cep,
         estadoCivil,
         genero,
-        experiencia,
         avaliacao,
       };
       setCandidatos((old) => [...old, novoCandidato]);
@@ -452,10 +450,28 @@ function Candidatos() {
     setCep(candidato.cep || "");
     setEstadoCivil(candidato.estadoCivil || "");
     setGenero(candidato.genero || "M");
-    setExperiencia(candidato.experiencia || "");
     setAvaliacao(candidato.avaliacao || null);
     setAbaAtiva("form");
   };
+
+  const modules = {
+    toolbar: [
+      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+      [{'size': ['small', false, 'large', 'huge']}],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+      ['link', 'image'],
+      [{ 'color': [] }, { 'background': [] }],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'color', 'background'
+  ];
 
   return (
     <div
@@ -545,15 +561,6 @@ function Candidatos() {
                 type="date"
                 value={dataNascimento}
                 onChange={(e) => setDataNascimento(e.target.value)}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Observações da Entrevista:
-              <textarea
-                value={observacoesEntrevista}
-                onChange={(e) => setObservacoesEntrevista(e.target.value)}
               />
             </label>
           </div>
@@ -658,14 +665,16 @@ function Candidatos() {
               </select>
             </label>
           </div>
-          <div>
-            <label>
-              Experiência:
-              <textarea
-                value={experiencia}
-                onChange={(e) => setExperiencia(e.target.value)}
-              />
-            </label>
+          <div style={{ gridColumn: "1 / 3" }}>
+            <label style={{ display: "block", marginBottom: "6px" }}>Observações da Entrevista:</label>
+            <ReactQuill
+              theme="snow"
+              value={observacoesEntrevista}
+              onChange={setObservacoesEntrevista}
+              modules={modules}
+              formats={formats}
+              style={{ height: "200px", marginBottom: "50px" }}
+            />
           </div>
           {/* Avaliação Comportamental */}
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
