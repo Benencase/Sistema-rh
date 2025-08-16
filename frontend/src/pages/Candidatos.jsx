@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+
+// **********************************************
+// * NOVO CÓDIGO A SER ADICIONADO *
+// **********************************************
+const Font = Quill.import('formats/font');
+// Adicione as fontes que deseja na lista
+Font.whitelist = ['Arial', 'Georgia', 'Times New Roman', 'Verdana'];
+Quill.register(Font, true);
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
   const fatores = [
@@ -442,8 +450,8 @@ function Candidatos() {
 
   const modules = {
     toolbar: [
-      [{ 'font': ['Arial', 'Verdana', 'Helvetica', 'Times New Roman', 'Georgia', 'Courier New', 'Trebuchet MS', 'sans-serif', 'serif'] }],
-      [{'size': ['small', false, 'large', 'huge']}],
+      [{ 'font': Font.whitelist }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
       [{ 'color': [] }],
     ],
   };
