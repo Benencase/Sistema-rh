@@ -123,7 +123,7 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
     <div>
       <h3>Lista de Candidatos</h3>
       {candidatos.length === 0 && <p>Nenhum candidato cadastrado ainda.</p>}
-      <ul>
+      <ul style={{ listStyleType: "none", padding: 0 }}>
         {candidatos.map((c) => {
           const somaTotal =
             c.avaliacao?.notas?.reduce((a, b) => a + (parseInt(b) || 0), 0) || 0;
@@ -134,72 +134,128 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
           return (
             <li
               key={c.id}
-              style={{ marginBottom: 20, borderBottom: "1px solid #ccc", paddingBottom: 10 }}
+              style={{
+                marginBottom: 20,
+                padding: 20,
+                border: "1px solid #ddd",
+                borderRadius: 8,
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                backgroundColor: "#fff",
+              }}
             >
-              <strong>
-                {c.nome} {c.sobrenome}
-              </strong>{" "}
-              - {c.vaga} - Status: {c.status}
-              <br />
-              Cidade: {c.estado} - {c.cidade}
-              <br />
-              {c.curriculo ? (
-                <p>
-                  Currículo enviado:{" "}
-                  <a href={c.curriculo} target="_blank" rel="noopener noreferrer">
-                    {c.nomeArquivoCurriculo || "Arquivo"}
-                  </a>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: "1px solid #eee",
+                  paddingBottom: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <div>
+                  <h4 style={{ margin: 0 }}>
+                    {c.nome} {c.sobrenome}
+                  </h4>
+                  <p style={{ margin: "5px 0 0 0", color: "#666" }}>
+                    Vaga: **{c.vaga}** | Status: **{c.status}**
+                  </p>
+                </div>
+                <div>
+                  <button
+                    onClick={() => editarCandidato(c)}
+                    style={{
+                      background: "#007bff",
+                      color: "#fff",
+                      border: "none",
+                      padding: "8px 12px",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleExcluir(c.id)}
+                    style={{
+                      marginLeft: 10,
+                      background: "#dc3545",
+                      color: "#fff",
+                      border: "none",
+                      padding: "8px 12px",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 10 }}>
+                <p style={{ margin: "0 0 5px 0" }}>
+                  **Cidade:** {c.estado} - {c.cidade}
                 </p>
-              ) : (
-                <p>Sem currículo enviado.</p>
-              )}
-              <label>
-                Enviar currículo (PDF/DOC):
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => handleEnvioCurriculo(c.id, e)}
-                />
-              </label>
+                {c.curriculo ? (
+                  <p style={{ margin: "0 0 5px 0" }}>
+                    **Currículo:**{" "}
+                    <a href={c.curriculo} target="_blank" rel="noopener noreferrer">
+                      {c.nomeArquivoCurriculo || "Arquivo"}
+                    </a>
+                  </p>
+                ) : (
+                  <p style={{ margin: "0 0 5px 0" }}>**Currículo:** Sem arquivo enviado.</p>
+                )}
+                <label style={{ display: "block", marginTop: 10 }}>
+                  Enviar currículo (PDF/DOC):
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => handleEnvioCurriculo(c.id, e)}
+                    style={{ marginLeft: 5 }}
+                  />
+                </label>
+              </div>
+
               {c.avaliacao && (
-                <div style={{ marginTop: 15 }}>
-                  <strong>Avaliação Comportamental:</strong>
+                <div
+                  style={{
+                    marginTop: 15,
+                    borderTop: "1px solid #eee",
+                    paddingTop: 15,
+                  }}
+                >
+                  <h5 style={{ margin: "0 0 10px 0" }}>Avaliação Comportamental</h5>
                   <table
-                    border="1"
-                    cellPadding="5"
-                    style={{ marginTop: 5, borderCollapse: "collapse" }}
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontSize: "0.9em",
+                    }}
                   >
                     <thead>
-                      <tr>
-                        <th>Fator</th>
-                        <th>Nota</th>
+                      <tr style={{ backgroundColor: "#f8f9fa" }}>
+                        <th style={{ border: "1px solid #dee2e6", padding: "8px", textAlign: "left" }}>Fator</th>
+                        <th style={{ border: "1px solid #dee2e6", padding: "8px", textAlign: "center", width: "80px" }}>Nota</th>
                       </tr>
                     </thead>
                     <tbody>
                       {fatores.map((fator, idx) => (
                         <tr key={idx}>
-                          <td>{fator}</td>
-                          <td style={{ textAlign: "center" }}>{c.avaliacao.notas?.[idx] || "-"}</td>
+                          <td style={{ border: "1px solid #dee2e6", padding: "8px" }}>{fator}</td>
+                          <td style={{ border: "1px solid #dee2e6", padding: "8px", textAlign: "center" }}>
+                            {c.avaliacao.notas?.[idx] || "-"}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <p>
-                    <strong>Soma Total:</strong> {somaTotal}
-                  </p>
-                  <p>
-                    <strong>Média:</strong> {media}
-                  </p>
+                  <div style={{ marginTop: 10 }}>
+                    <p style={{ margin: "0 0 5px 0" }}>**Soma Total:** {somaTotal}</p>
+                    <p style={{ margin: "0 0 0 0" }}>**Média:** {media}</p>
+                  </div>
                 </div>
               )}
-              <br />
-              <button onClick={() => editarCandidato(c)}>Editar</button>
-              <button
-                onClick={() => handleExcluir(c.id)}
-                style={{ marginLeft: 10, color: "red" }}
-              >
-                Excluir
-              </button>
             </li>
           );
         })}
