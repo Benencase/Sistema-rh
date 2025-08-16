@@ -21,7 +21,7 @@ function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
 
   const handleNotaChange = (i, valor) => {
     const novasNotas = [...(avaliacao?.notas || Array(fatores.length).fill(""))];
-    novasNotas[i] = valor;
+    novasNotas.splice(i, 1, valor);
     setAvaliacao({ ...avaliacao, notas: novasNotas });
   };
 
@@ -143,36 +143,32 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                 borderRadius: 8,
                 boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 backgroundColor: "#fff",
-                position: "relative", // Adicionado para posicionar a foto
+                display: "flex",
+                flexDirection: "column",
+                gap: 15
               }}
             >
-              {c.foto && (
-                <div style={{ position: 'absolute', top: 20, right: 20 }}>
-                  <img
-                    src={c.foto}
-                    alt="Foto do candidato"
-                    style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%', border: '2px solid #007bff' }}
-                  />
-                </div>
-              )}
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottom: "1px solid #eee",
-                  paddingBottom: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <div>
-                  <h4 style={{ margin: 0 }}>
-                    {c.nome} {c.sobrenome}
-                  </h4>
-                  <p style={{ margin: "5px 0 0 0", color: "#666" }}>
-                    Vaga: **{c.vaga}** | Status: **{c.status}**
-                  </p>
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+                  {c.foto && (
+                    <img
+                      src={c.foto}
+                      alt="Foto do candidato"
+                      style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%', border: '2px solid #007bff' }}
+                    />
+                  )}
+                  <div>
+                    <h4 style={{ margin: "0 0 5px 0" }}>
+                      {c.nome} {c.sobrenome}
+                    </h4>
+                    <p style={{ margin: "0", color: "#666" }}>
+                      Vaga: **{c.vaga}** | Status: **{c.status}**
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <button
@@ -205,7 +201,7 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                 </div>
               </div>
 
-              <div style={{ marginBottom: 10 }}>
+              <div style={{ borderTop: "1px solid #eee", paddingTop: 10 }}>
                 <p style={{ margin: "0 0 5px 0" }}>
                   **Cidade:** {c.estado} - {c.cidade}
                 </p>
@@ -310,33 +306,12 @@ function Candidatos() {
   ];
 
   const cidadesDoBrasil = [
-    "AC - Rio Branco",
-    "AL - Maceió",
-    "AP - Macapá",
-    "AM - Manaus",
-    "BA - Salvador",
-    "CE - Fortaleza",
-    "DF - Brasília",
-    "ES - Vitória",
-    "GO - Goiânia",
-    "MA - São Luís",
-    "MT - Cuiabá",
-    "MS - Campo Grande",
-    "MG - Belo Horizonte",
-    "PA - Belém",
-    "PB - João Pessoa",
-    "PR - Curitiba",
-    "PE - Recife",
-    "PI - Teresina",
-    "RJ - Rio de Janeiro",
-    "RN - Natal",
-    "RS - Porto Alegre",
-    "RO - Porto Velho",
-    "RR - Boa Vista",
-    "SC - Florianópolis",
-    "SP - São Paulo",
-    "SE - Aracaju",
-    "TO - Palmas",
+    "AC - Rio Branco", "AL - Maceió", "AP - Macapá", "AM - Manaus", "BA - Salvador",
+    "CE - Fortaleza", "DF - Brasília", "ES - Vitória", "GO - Goiânia", "MA - São Luís",
+    "MT - Cuiabá", "MS - Campo Grande", "MG - Belo Horizonte", "PA - Belém", "PB - João Pessoa",
+    "PR - Curitiba", "PE - Recife", "PI - Teresina", "RJ - Rio de Janeiro", "RN - Natal",
+    "RS - Porto Alegre", "RO - Porto Velho", "RR - Boa Vista", "SC - Florianópolis",
+    "SP - São Paulo", "SE - Aracaju", "TO - Palmas",
   ];
 
   useEffect(() => {
