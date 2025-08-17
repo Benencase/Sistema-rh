@@ -2,17 +2,11 @@ import React, { useState, useEffect } from "react";
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-// Para usar fontes mais comuns no ReactQuill
+// Para usar apenas a fonte Arial, não precisamos de um arquivo CSS externo.
+// A fonte padrão do navegador (que pode ser Arial) será usada.
+// O código abaixo garante que apenas 'Arial' apareça no menu.
 const Font = Quill.import('formats/font');
-Font.whitelist = [
-  'Arial',
-  'Times New Roman',
-  'Georgia',
-  'Verdana',
-  'Tahoma',
-  'Helvetica',
-  'Courier New'
-];
+Font.whitelist = ['Arial', 'sans-serif', 'serif', 'monospace'];
 Quill.register(Font, true);
 
 function AvaliacaoEntrevista({ avaliacao, setAvaliacao }) {
@@ -179,7 +173,7 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                       {c.nome} {c.sobrenome}
                     </h4>
                     <p style={{ margin: "0", color: "#666" }}>
-                      Vaga: <b>{c.vaga}</b> | Status: <b>{c.status}</b>
+                      Vaga: **{c.vaga}** | Status: **{c.status}**
                     </p>
                   </div>
                 </div>
@@ -216,17 +210,17 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
 
               <div style={{ borderTop: "1px solid #dee2e6", paddingTop: 10 }}>
                 <p style={{ margin: "0 0 5px 0", color: "#343A40" }}>
-                  <b>Cidade:</b> {c.estado} - {c.cidade}
+                  **Cidade:** {c.estado} - {c.cidade}
                 </p>
                 {c.curriculo ? (
                   <p style={{ margin: "0 0 5px 0", color: "#343A40" }}>
-                    <b>Currículo:</b>{" "}
+                    **Currículo:**{" "}
                     <a href={c.curriculo} target="_blank" rel="noopener noreferrer">
                       {c.nomeArquivoCurriculo || "Arquivo"}
                     </a>
                   </p>
                 ) : (
-                  <p style={{ margin: "0 0 5px 0", color: "#343A40" }}><b>Currículo:</b> Sem arquivo enviado.</p>
+                  <p style={{ margin: "0 0 5px 0", color: "#343A40" }}>**Currículo:** Sem arquivo enviado.</p>
                 )}
                 <label style={{ display: "block", marginTop: 10 }}>
                   Enviar currículo (PDF/DOC):
@@ -273,8 +267,8 @@ function Curriculo({ candidatos, setCandidatos, editarCandidato }) {
                     </tbody>
                   </table>
                   <div style={{ marginTop: 10 }}>
-                    <p style={{ margin: "0 0 5px 0", color: "#343A40" }}><b>Soma Total:</b> {somaTotal}</p>
-                    <p style={{ margin: "0 0 0 0", color: "#343A40" }}><b>Média:</b> {media}</p>
+                    <p style={{ margin: "0 0 5px 0", color: "#343A40" }}>**Soma Total:** {somaTotal}</p>
+                    <p style={{ margin: "0 0 0 0", color: "#343A40" }}>**Média:** {media}</p>
                   </div>
                 </div>
               )}
@@ -469,36 +463,65 @@ function Candidatos() {
     URL.revokeObjectURL(url);
   };
 
-  // CONFIGURAÇÃO DA PALETA DE CORES, TAMANHOS E FONTES DO REACT-QUILL
+  // CONFIGURAÇÃO DA PALETA DE CORES E TAMANHOS DO REACT-QUILL
   const modules = {
     toolbar: [
-      [{ 'font': Font.whitelist }], // dropdown com as fontes
-      [{ 'size': ['10px', '12px', '14px', '16px', '20px', '24px'] }],
-      [{ 'color': ['#000000', '#28a745', '#dc3545', '#007bff', '#6c757d', '#ffc107', '#ffffff'] }],
-      [{ 'background': ['#ffffff', '#f8f9fa', '#e9ecef', '#dee2e6', '#adb5bd', '#6c757d'] }],
+      [{ 'font': ['Arial', 'sans-serif', 'serif', 'monospace'] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'color': [] }],
+      [{ 'background': [] }],
       ['bold', 'italic', 'underline'],
-      [{ 'align': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       ['clean']
     ],
   };
 
   const formats = [
-    'font', 'size', 'color', 'background', 'bold', 'italic', 'underline', 'align'
+    'font', 'size', 'color', 'background', 'bold', 'italic', 'underline', 'list', 'bullet'
   ];
 
   return (
-    <div style={{ padding: 20, maxWidth: 900, margin: "auto" }}>
-      <h2>Cadastro de Candidatos</h2>
-      <div style={{ marginBottom: 12 }}>
-        <button onClick={() => setAbaAtiva("form")} disabled={abaAtiva === "form"}>
+    <div
+      style={{
+        maxWidth: 900,
+        margin: "auto",
+        padding: 20,
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#F7F9FC",
+        borderRadius: 8
+      }}
+    >
+      <h2 style={{ textAlign: "center", marginBottom: 20 }}>Gestão de Candidatos</h2>
+
+      <div style={{ marginBottom: 20, textAlign: "center" }}>
+        <button
+          onClick={() => setAbaAtiva("form")}
+          disabled={abaAtiva === "form"}
+          style={{
+            padding: "10px 20px",
+            marginRight: 10,
+            background: abaAtiva === "form" ? "#007bff" : "#e9ecef",
+            color: abaAtiva === "form" ? "#fff" : "#000",
+            border: "none",
+            borderRadius: 4,
+            cursor: "pointer",
+          }}
+        >
           Formulário
         </button>
         <button
           onClick={() => setAbaAtiva("curriculo")}
           disabled={abaAtiva === "curriculo"}
-          style={{ marginLeft: 8 }}
+          style={{
+            padding: "10px 20px",
+            background: abaAtiva === "curriculo" ? "#007bff" : "#e9ecef",
+            color: abaAtiva === "curriculo" ? "#fff" : "#000",
+            border: "none",
+            borderRadius: 4,
+            cursor: "pointer",
+          }}
         >
-          Currículo
+          Currículos
         </button>
       </div>
 
@@ -509,127 +532,146 @@ function Candidatos() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 16,
-            background: "#fafafa",
+            background: "#fff",
             padding: 20,
-            borderRadius: 10,
+            borderRadius: 8,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
           }}
         >
           <div>
-            <label>
-              Nome*:<br />
-              <input
-                type="text"
-                value={novoNome}
-                onChange={(e) => setNovoNome(e.target.value)}
-                required
-              />
-            </label>
+            <label>Nome*:</label>
+            <input
+              type="text"
+              value={novoNome}
+              onChange={(e) => setNovoNome(e.target.value)}
+              required
+              style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
+            />
           </div>
           <div>
-            <label>
-              Sobrenome:<br />
-              <input
-                type="text"
-                value={sobrenome}
-                onChange={(e) => setSobrenome(e.target.value)}
-              />
-            </label>
+            <label>Sobrenome:</label>
+            <input
+              type="text"
+              value={sobrenome}
+              onChange={(e) => setSobrenome(e.target.value)}
+              style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
+            />
           </div>
           <div>
-            <label>
-              Cidade*:<br />
-              <input
-                list="cidadesDoBrasil"
-                value={novaCidade}
-                onChange={(e) => setNovaCidade(e.target.value)}
-                placeholder="UF - Cidade"
-                required
-              />
-              <datalist id="cidadesDoBrasil">
-                {cidadesDoBrasil.map((c, i) => (
-                  <option key={i} value={c} />
-                ))}
-              </datalist>
-            </label>
+            <label>Cidade*:</label>
+            <input
+              list="cidadesDoBrasil"
+              value={novaCidade}
+              onChange={(e) => setNovaCidade(e.target.value)}
+              placeholder="UF - Cidade"
+              required
+              style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
+            />
+            <datalist id="cidadesDoBrasil">
+              {cidadesDoBrasil.map((c, i) => (
+                <option key={i} value={c} />
+              ))}
+            </datalist>
           </div>
           <div>
-            <label>
-              Data Nascimento:<br />
-              <input
-                type="date"
-                value={dataNascimento}
-                onChange={(e) => setDataNascimento(e.target.value)}
-              />
-            </label>
+            <label>Data Nascimento:</label>
+            <input
+              type="date"
+              value={dataNascimento}
+              onChange={(e) => setDataNascimento(e.target.value)}
+              style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
+            />
           </div>
           <div style={{ gridColumn: "1 / 3" }}>
-            <label>
-              Observações Entrevista:<br />
-              <ReactQuill
-                theme="snow"
-                value={observacoesEntrevista}
-                onChange={setObservacoesEntrevista}
-                modules={modules}
-                formats={formats}
-                style={{ height: 150, marginBottom: 40 }}
-              />
-            </label>
-            <button type="button" onClick={handleDownloadCurriculo} style={{ marginTop: 10 }}>
-              Baixar Currículo (HTML)
+            <label>Observações gerais:</label>
+            <ReactQuill
+              value={observacoesEntrevista}
+              onChange={setObservacoesEntrevista}
+              modules={modules}
+              formats={formats}
+              style={{ background: "#fff", borderRadius: 4 }}
+            />
+            <button
+              type="button"
+              onClick={handleDownloadCurriculo}
+              style={{
+                marginTop: 10,
+                background: "#28a745",
+                color: "#fff",
+                border: "none",
+                padding: "8px 12px",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
+              Baixar Currículo HTML
             </button>
           </div>
           <div>
-            <label>
-              Vaga*:<br />
-              <input
-                type="text"
-                value={novaVaga}
-                onChange={(e) => setNovaVaga(e.target.value)}
-                required
-              />
-            </label>
+            <label>Vaga*:</label>
+            <input
+              type="text"
+              value={novaVaga}
+              onChange={(e) => setNovaVaga(e.target.value)}
+              required
+              style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
+            />
           </div>
           <div>
-            <label>
-              Status:<br />
-              <select
-                value={novoStatus}
-                onChange={(e) => setNovoStatus(e.target.value)}
-              >
-                {statusOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <label>Status:</label>
+            <select
+              value={novoStatus}
+              onChange={(e) => setNovoStatus(e.target.value)}
+              style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
+            >
+              {statusOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
           </div>
           <div style={{ gridColumn: "1 / 3" }}>
-            <label>
-              Foto:<br />
-              <input type="file" accept="image/*" onChange={handleFotoChange} />
-              {previewFoto && (
-                <img
-                  src={previewFoto}
-                  alt="preview"
-                  style={{ marginTop: 10, maxWidth: 150, borderRadius: 8 }}
-                />
-              )}
-            </label>
+            <label>Foto:</label>
+            <input type="file" accept="image/*" onChange={handleFotoChange} />
+            {previewFoto && (
+              <img
+                src={previewFoto}
+                alt="preview"
+                style={{ marginTop: 10, maxWidth: 150, borderRadius: 8 }}
+              />
+            )}
           </div>
 
-          {/* Avaliação Comportamental */}
           <AvaliacaoEntrevista avaliacao={avaliacao} setAvaliacao={setAvaliacao} />
 
-          <div style={{ gridColumn: "1 / 3", marginTop: 20 }}>
-            <button type="submit">
+          <div style={{ gridColumn: "1 / 3", textAlign: "center", marginTop: 20 }}>
+            <button
+              type="submit"
+              style={{
+                background: "#007bff",
+                color: "#fff",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
               {editandoId ? "Atualizar Candidato" : "Adicionar Candidato"}
             </button>
             {editandoId && (
               <button
-                onClick={limparFormulario}
-                style={{ marginLeft: 10 }}
                 type="button"
+                onClick={limparFormulario}
+                style={{
+                  marginLeft: 10,
+                  background: "#6c757d",
+                  color: "#fff",
+                  border: "none",
+                  padding: "10px 20px",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                }}
               >
                 Cancelar
               </button>
