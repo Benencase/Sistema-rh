@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -116,3 +117,40 @@ function App() {
 }
 
 export default App;
+=======
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Inicio from './pages/Inicio';
+import Candidatos from './pages/Candidatos';
+import Login from './components/Login';
+import Dashboard from './pages/Dashboard';  // Importando Dashboard
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <ul style={{ display: 'flex', gap: '10px', listStyle: 'none', padding: 10 }}>
+          <li>
+            <Link to="/">Início</Link>
+          </li>
+          <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
+          <li>
+            <Link to="/candidatos">Candidatos</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Inicio />} />
+        <Route path="/dashboard" element={<Dashboard />} />  {/* Rota para Dashboard */}
+        <Route path="/candidatos" element={<Candidatos />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+>>>>>>> 5af7171 (Atualiza .gitignore e remove node_modules do Git)

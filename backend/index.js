@@ -1,4 +1,5 @@
 const express = require('express');
+<<<<<<< HEAD
 const cors = require('cors');
 const path = require('path');
 
@@ -47,4 +48,42 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Chave atual: ${CHAVE_FIXA}`);
+=======
+const cors = require('cors');  // Importa cors
+const app = express();
+const port = 5000;
+
+// Importa as rotas de candidatos, vagas e autenticação
+const candidatosRoutes = require('./routes/candidatos');
+const vagasRoutes = require('./routes/vagas');
+const authRoutes = require('./routes/auth');
+
+// Importa o middleware de autenticação
+const verifyToken = require('./middleware/auth');
+
+// Habilita CORS para permitir acesso do frontend
+app.use(cors());
+
+// Permite que o backend receba JSON no corpo das requisições
+app.use(express.json());
+
+// Serve arquivos estáticos da pasta 'uploads' na rota /uploads
+app.use('/uploads', express.static('uploads'));
+
+// Usa as rotas públicas
+app.use('/candidatos', candidatosRoutes);
+app.use('/auth', authRoutes);
+
+// Usa rota de vagas protegida por token
+app.use('/vagas', verifyToken, vagasRoutes);
+
+// Rota raiz só para teste do servidor
+app.get('/', (req, res) => {
+  res.send('Backend rodando!');
+});
+
+// Inicia o servidor na porta 5000
+app.listen(port, () => {
+  console.log(`Servidor backend rodando na porta ${port}`);
+>>>>>>> 5af7171 (Atualiza .gitignore e remove node_modules do Git)
 });
