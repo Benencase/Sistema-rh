@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "rh-app",
   "version": "1.0.0",
   "private": true,
@@ -7,13 +6,7 @@
     "start": "concurrently \"cd backend && npm run start\" \"cd frontend && npm run dev\""
   },
   "devDependencies": {
-    "concurrently": "^8.2.0",
+    "concurrently": "^9.2.0",
     "gh-pages": "^6.3.0"
   }
 }
-=======
-  "devDependencies": {
-    "concurrently": "^9.2.0"
-  }
-}
->>>>>>> 5af7171 (Atualiza .gitignore e remove node_modules do Git)
