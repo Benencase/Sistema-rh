@@ -8,7 +8,7 @@ export default function Candidatos() {
     cidade: '',
     sobre: '',
     vaga: '',
-    status: 'não selecionado',
+    status: 'não selecionado', // mantém o valor inicial
     foto: null,
     curriculo: null,
   });
