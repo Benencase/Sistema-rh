@@ -70,7 +70,7 @@ export default function Candidatos() {
         cidade: '',
         sobre: '',
         vaga: '',
-        status: 'não selecionado',
+        status: 'não selecionado', // mantém "Não Selecionado" após reset
         foto: null,
         curriculo: null,
       });
@@ -210,7 +210,7 @@ export default function Candidatos() {
           <option value="em andamento">Em Andamento</option>
           <option value="contratado">Contratado</option>
           <option value="não apto no momento">Não Apto no Momento</option>
-          <option value="desistiu da vaga">Desistiu da vaga</option>
+          <option value="desistiu da vaga">Desistiu da vaga</option> {/* nova opção */}
         </select>
 
         <label>
