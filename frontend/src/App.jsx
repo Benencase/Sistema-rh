@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -35,46 +35,53 @@ export default function App() {
   const handleLogin = () => setIsLoggedIn(true);
   const handleLogout = () => {
     setIsLoggedIn(false);
-    // localStorage.clear(); // se quiser limpar tudo ao sair
+    // localStorage.clear(); // opcional: limpar tudo ao sair
   };
 
+  // Renderiza a página de login se não estiver logado
   if (!isLoggedIn) {
     return <Login onLogin={handleLogin} />;
   }
 
   return (
-    <BrowserRouter>
-      <div style={{ padding: "1rem" }}>
-        <button
-          onClick={handleLogout}
-          style={{ float: "right", padding: "0.5rem 1rem", cursor: "pointer" }}
-        >
-          Sair
-        </button>
+    <div style={{ padding: "1rem" }}>
+      <button
+        onClick={handleLogout}
+        style={{ float: "right", padding: "0.5rem 1rem", cursor: "pointer" }}
+      >
+        Sair
+      </button>
 
-        <nav style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
-          <Link to="/" style={{ textDecoration: "none" }}>Início</Link>
-          <Link to="/dashboard" style={{ textDecoration: "none" }}>Dashboard</Link>
-          <Link to="/candidatos" style={{ textDecoration: "none" }}>Candidatos</Link>
-          <Link to="/vagas" style={{ textDecoration: "none" }}>Vagas</Link>
-        </nav>
+      <nav style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          Início
+        </Link>
+        <Link to="/dashboard" style={{ textDecoration: "none" }}>
+          Dashboard
+        </Link>
+        <Link to="/candidatos" style={{ textDecoration: "none" }}>
+          Candidatos
+        </Link>
+        <Link to="/vagas" style={{ textDecoration: "none" }}>
+          Vagas
+        </Link>
+      </nav>
 
-        <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route
-            path="/dashboard"
-            element={<Dashboard candidatos={candidatos} vagas={vagas} />}
-          />
-          <Route
-            path="/candidatos"
-            element={<Candidatos candidatos={candidatos} setCandidatos={setCandidatos} />}
-          />
-          <Route
-            path="/vagas"
-            element={<Vagas vagas={vagas} setVagas={setVagas} />}
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Inicio />} />
+        <Route
+          path="/dashboard"
+          element={<Dashboard candidatos={candidatos} vagas={vagas} />}
+        />
+        <Route
+          path="/candidatos"
+          element={<Candidatos candidatos={candidatos} setCandidatos={setCandidatos} />}
+        />
+        <Route
+          path="/vagas"
+          element={<Vagas vagas={vagas} setVagas={setVagas} />}
+        />
+      </Routes>
+    </div>
   );
 }
