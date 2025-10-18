@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+/* Global box-sizing para facilitar layout */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
-a {
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-input, select, button {
-  margin: 0.2rem;
-=======
+
+/* Root e tipografia */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -21,21 +13,12 @@ input, select, button {
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Body */
 body {
   margin: 0;
   display: flex;
@@ -44,30 +27,49 @@ body {
   min-height: 100vh;
 }
 
+/* Links */
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #535bf2;
+  text-decoration: underline;
+}
+
+/* Cabeçalhos */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/* Inputs, selects e buttons */
+input, select, button {
+  margin: 0.2rem;
+  font-family: inherit;
+}
+
+/* Botões */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.25s;
 }
 button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+button:focus {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Tema claro */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -79,5 +81,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
->>>>>>> 5af7171 (Atualiza .gitignore e remove node_modules do Git)
 }
